@@ -24,9 +24,7 @@ class EntryActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
 
         if (auth.currentUser != null) {
-            val intent = Intent(this, LoggedInActivity::class.java)
-            startActivity(intent)
-            finish()
+            successfulLogin()
         }
     }
 
@@ -48,6 +46,13 @@ class EntryActivity : AppCompatActivity() {
         )
     }
 
+    fun successfulLogin() {
+
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent);
+        finish();
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // TODO: add error codes and handle everything apart from successful login
         super.onActivityResult(requestCode, resultCode, data)
@@ -57,10 +62,7 @@ class EntryActivity : AppCompatActivity() {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-
-                val intent = Intent(this, LoggedInActivity::class.java)
-                startActivity(intent);
-                finish();
+                successfulLogin()
             } else {
                 // Sign in failed
                 if (response == null) {
