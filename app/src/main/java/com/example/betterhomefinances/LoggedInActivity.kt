@@ -29,7 +29,7 @@ class LoggedInActivity : AppCompatActivity() {
         AuthUI.getInstance()
             .signOut(this)
             .addOnCompleteListener { // user is now signed out
-                startActivity(Intent(this, MainActivity::class.java))
+                startActivity(Intent(this, LoggedInActivity::class.java))
                 finish()
             }
 

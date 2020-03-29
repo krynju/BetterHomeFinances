@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 const val RC_SIGN_IN = 123;
 
-class MainActivity : AppCompatActivity() {
+class EntryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
