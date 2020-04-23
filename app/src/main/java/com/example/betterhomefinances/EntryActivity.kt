@@ -10,7 +10,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
 
 const val RC_SIGN_IN = 123;
 
@@ -20,15 +19,9 @@ class EntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_entry)
 
-
-        val auth = FirebaseAuth.getInstance()
-
-        if (auth.currentUser != null) {
+        if (UserHandler.currentUser != null) {
             successfulLogin()
         }
-
-//        auth.currentUser.getUid()
-//        auth.currentUser.getDisplayName();
     }
 
 
@@ -64,6 +57,7 @@ class EntryActivity : AppCompatActivity() {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
+//                UserHandler.refresh()
                 successfulLogin()
             } else {
                 // Sign in failed
