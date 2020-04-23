@@ -26,6 +26,9 @@ class EntryActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             successfulLogin()
         }
+
+//        auth.currentUser.getUid()
+//        auth.currentUser.getDisplayName();
     }
 
 
@@ -47,7 +50,6 @@ class EntryActivity : AppCompatActivity() {
     }
 
     fun successfulLogin() {
-
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent);
         finish();

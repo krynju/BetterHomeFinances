@@ -16,9 +16,9 @@ import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        val userName = currentUser?.displayName
+        val userId = currentUser?.uid
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
