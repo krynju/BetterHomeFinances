@@ -25,7 +25,8 @@ object UserHandler {
     val userSettings
         get() = FirestoreHandler.users.document(userId.toString())
             .get()
-            .addOnFailureListener { initiateUserSettings() }
+            .addOnFailureListener { initiateUserSettings() } // initiate only on no document error, no network is fine
+
 
     fun initiateUserSettings() {
         val data = UserDetails(UserSettings("tempstuff"))

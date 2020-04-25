@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.betterhomefinances.databinding.ActivityEntryBinding
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder
@@ -14,10 +15,14 @@ import com.firebase.ui.auth.IdpResponse
 const val RC_SIGN_IN = 123;
 
 class EntryActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityEntryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_entry)
+
+        binding = ActivityEntryBinding.inflate(layoutInflater)
+
+
+        setContentView(binding.root)
 
         if (UserHandler.currentUser != null) {
             successfulLogin()
