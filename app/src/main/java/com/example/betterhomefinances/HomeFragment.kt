@@ -28,7 +28,8 @@ class HomeFragment : Fragment() {
 
         binding.textHome.text = "etetetete"
 
-        UserHandler.userSettings
+        UserHandler.userSettings.get()
+            .addOnFailureListener { UserHandler.initiateUserSettings() }
             .addOnSuccessListener { result ->
                 temptext = result.toObject<UserDetails>()
                 binding.textHome.text = temptext?.settings?.tempstuff!!

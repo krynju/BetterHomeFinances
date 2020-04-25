@@ -2,6 +2,7 @@ package com.example.betterhomefinances
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
 
 
@@ -10,7 +11,8 @@ data class UserDetails(
 )
 
 data class UserSettings(
-    var tempstuff: String? = null
+    var tempstuff: String? = null,
+    var memberOfGroups: ArrayList<DocumentReference> = ArrayList<DocumentReference>()
 )
 
 object UserHandler {
@@ -22,14 +24,11 @@ object UserHandler {
     val userId: String? get() = currentUser?.uid
 
 
-    val userSettings
-        get() = FirestoreHandler.users.document(userId.toString())
-            .get()
-            .addOnFailureListener { initiateUserSettings() } // initiate only on no document error, no network is fine
+    val userSettings get() = FirestoreHandler.users.document(userId.toString())
 
 
     fun initiateUserSettings() {
-        val data = UserDetails(UserSettings("tempstuff"))
+        val data = UserDetails(UserSettings("tempstuff", ArrayList<DocumentReference>()))
 
         FirestoreHandler.users
             .document(userId.toString())
