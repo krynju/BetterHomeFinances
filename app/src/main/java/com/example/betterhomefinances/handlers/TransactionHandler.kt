@@ -13,5 +13,10 @@ data class Transaction(
 )
 
 object TransactionHandler {
+    fun transactionsReference(groupId: String) =
+        FirestoreHandler.groups.document(groupId).collection("transactions")
+
+    fun transactionsReference(groupRef: DocumentReference) =
+        groupRef.collection("transactions")
 
 }
