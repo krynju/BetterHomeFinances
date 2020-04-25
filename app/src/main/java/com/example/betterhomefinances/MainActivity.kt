@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
 import com.example.betterhomefinances.dummy.DummyContent
+import com.example.betterhomefinances.handlers.GroupHandler
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -34,8 +35,7 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
 
         val fab: FloatingActionButton = binding.root.fab
         fab.setOnClickListener { view ->
-//            Log.d(TAG, "${UserHandler.userSettings}");
-
+            GroupHandler.createGroup()
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
@@ -43,19 +43,14 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
         val drawerLayout: DrawerLayout = binding.root.drawer_layout
         val navView: NavigationView = binding.navView
         val navController =
-            findNavController(R.id.nav_host_fragment) // TODO this is on not-new binding type
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_groups, R.id.nav_slideshow
-            ), drawerLayout
-        )
+            findNavController(R.id.nav_host_fragment)
+
+        appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
+            .setDrawerLayout(drawerLayout)
+            .build()
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

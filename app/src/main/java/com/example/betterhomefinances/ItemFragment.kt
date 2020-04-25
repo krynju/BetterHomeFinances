@@ -18,7 +18,7 @@ import com.example.betterhomefinances.dummy.DummyContent.DummyItem
  * [ItemFragment.OnListFragmentInteractionListener] interface.
  */
 class ItemFragment : Fragment() {
-
+    private val TAG = "ItemFragment.kt"
     // TODO: Customize parameters
     private var columnCount = 1
 
@@ -31,6 +31,7 @@ class ItemFragment : Fragment() {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +49,22 @@ class ItemFragment : Fragment() {
                 adapter = MyItemRecyclerViewAdapter(DummyContent.ITEMS, listener)
             }
         }
+
+//        var userDetails : UserDetails;
+//        UserHandler.userReference
+//            .get()
+//            .addOnSuccessListener{result ->
+//                Log.d(TAG, "$result")
+//
+//                userDetails = result.toObject<UserDetails>()!!
+//
+//                GroupHandler.group(userDetails.memberOfGroups[0]).collection("transactions").get()
+//                    .addOnSuccessListener { result2 ->
+//                        Log.d(TAG, "$result2")
+//                    }
+//            }
+//            .addOnFailureListener{}
+
         return view
     }
 

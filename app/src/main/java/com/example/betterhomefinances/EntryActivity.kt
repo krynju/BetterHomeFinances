@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.betterhomefinances.databinding.ActivityEntryBinding
+import com.example.betterhomefinances.handlers.UserHandler
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder
@@ -47,7 +48,7 @@ class EntryActivity : AppCompatActivity() {
         )
     }
 
-    fun successfulLogin() {
+    private fun successfulLogin() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent);
         finish();
@@ -62,7 +63,7 @@ class EntryActivity : AppCompatActivity() {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-                UserHandler.initiateUserSettings()
+                UserHandler.initiateUserDetails()
                 successfulLogin()
             } else {
                 // Sign in failed

@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.handlers
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
@@ -7,12 +7,12 @@ import com.google.firebase.firestore.SetOptions
 
 
 data class UserDetails(
-    var settings: UserSettings? = null
+    var settings: UserSettings? = null,
+    var memberOfGroups: ArrayList<DocumentReference> = ArrayList<DocumentReference>()
 )
 
 data class UserSettings(
-    var tempstuff: String? = null,
-    var memberOfGroups: ArrayList<DocumentReference> = ArrayList<DocumentReference>()
+    var tempstuff: String? = null
 )
 
 object UserHandler {
@@ -23,12 +23,14 @@ object UserHandler {
     val userName: String? get() = currentUser?.displayName
     val userId: String? get() = currentUser?.uid
 
+    val userReference: DocumentReference get() = FirestoreHandler.users.document(userId.toString())
 
-    val userSettings get() = FirestoreHandler.users.document(userId.toString())
 
-
-    fun initiateUserSettings() {
-        val data = UserDetails(UserSettings("tempstuff", ArrayList<DocumentReference>()))
+    fun initiateUserDetails() {
+        val data = UserDetails(
+            UserSettings("tempstuff"),
+            ArrayList<DocumentReference>()
+        )
 
         FirestoreHandler.users
             .document(userId.toString())
