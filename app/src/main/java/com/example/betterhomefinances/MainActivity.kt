@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
+//            Log.d(TAG, "${UserHandler.userSettings}");
+
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                     .signOut(this)
                     .addOnCompleteListener { // user is now signed out
                         startActivity(Intent(this, EntryActivity::class.java))
-//                        UserHandler.refresh()
                         finish()
                     }
                 true

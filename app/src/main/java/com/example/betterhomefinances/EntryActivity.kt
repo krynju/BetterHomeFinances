@@ -57,7 +57,7 @@ class EntryActivity : AppCompatActivity() {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-//                UserHandler.refresh()
+                UserHandler.initiateUserSettings()
                 successfulLogin()
             } else {
                 // Sign in failed
