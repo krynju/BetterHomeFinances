@@ -1,14 +1,15 @@
 package com.example.betterhomefinances.handlers
 
+import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.toObject
 
 data class Group(
-    val name: String,
-    val members: ArrayList<DocumentReference>,
-    val balance: Balance
+    val name: String? = null,
+    val members: ArrayList<String> = arrayListOf(),
+    val balance: Balance = Balance()
 )
 
 object GroupHandler {
@@ -20,8 +21,8 @@ object GroupHandler {
         FirestoreHandler.groups
             .add(
                 Group(
-                    "hello1",
-                    arrayListOf(UserHandler.userReference),
+                    "TEST_GROUP",
+                    arrayListOf(UserHandler.userReference.path),
                     Balance(HashMap(), ArrayList(), Timestamp.now())
                 )
             )
@@ -37,7 +38,11 @@ object GroupHandler {
         FirestoreHandler.db.runTransaction { transaction ->
             val group = transaction.get(ref).toObject<Group>()
             for (userRef in group?.members!!) {
-                transaction.update(userRef, "memberOfGroups", FieldValue.arrayRemove(ref))
+                transaction.update(
+                    db.document(userRef),
+                    "memberOfGroups",
+                    FieldValue.arrayRemove(ref)
+                )
             }
 //            transaction.delete(ref)
             //TODO: need to create a Function for deleting subcollections :/

@@ -14,7 +14,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
 import com.example.betterhomefinances.dummy.DummyContent
-import com.example.betterhomefinances.handlers.GroupHandler
+import com.example.betterhomefinances.handlers.FirestoreHandler
+import com.example.betterhomefinances.handlers.TransactionHandler
+import com.example.betterhomefinances.handlers.UserHandler.userReference
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -35,7 +37,22 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
 
         val fab: FloatingActionButton = binding.root.fab
         fab.setOnClickListener { view ->
-            GroupHandler.createGroup()
+//            GroupHandler.createGroup()
+
+            TransactionHandler.createTransaction(
+                groupPath = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
+                borrowers = hashMapOf(
+                    userReference.path to 5.0,
+                    "users/uNMjYrRUfhDiGUboqD79" to 5.0
+                ),
+                title = "TEST TRANSACTION",
+                category = "TEST CATEGORY",
+                description = "yeet",
+                lender = userReference.path,
+                value = 10.0
+            )
+
+
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
