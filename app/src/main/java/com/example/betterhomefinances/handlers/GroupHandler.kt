@@ -6,6 +6,8 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.toObject
 
+typealias GroupReference = String
+
 data class Group(
     val name: String? = null,
     val members: ArrayList<String> = arrayListOf(),
@@ -35,7 +37,7 @@ object GroupHandler {
     }
 
     fun removeGroup(ref: DocumentReference) {
-        FirestoreHandler.db.runTransaction { transaction ->
+        db.runTransaction { transaction ->
             val group = transaction.get(ref).toObject<Group>()
             for (userRef in group?.members!!) {
                 transaction.update(

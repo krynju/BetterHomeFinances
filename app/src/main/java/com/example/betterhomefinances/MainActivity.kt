@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
 //            GroupHandler.createGroup()
 
             TransactionHandler.createTransaction(
-                groupPath = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
+                groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
                 borrowers = hashMapOf(
                     userReference.path to 5.0,
                     "users/uNMjYrRUfhDiGUboqD79" to 5.0

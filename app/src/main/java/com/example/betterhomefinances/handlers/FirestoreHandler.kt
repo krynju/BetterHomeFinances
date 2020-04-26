@@ -9,5 +9,8 @@ object FirestoreHandler {
     var users = db.collection("users")
     var groups = db.collection("groups")
 
+    fun ref(ref: String) = db.document(ref)
+
+
 
 }

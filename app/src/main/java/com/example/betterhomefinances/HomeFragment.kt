@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.example.betterhomefinances.databinding.FragmentHomeBinding
 import com.example.betterhomefinances.handlers.UserDetails
 import com.example.betterhomefinances.handlers.UserHandler
-import com.google.firebase.firestore.ktx.toObject
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -23,12 +22,13 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        UserHandler.userReference.get()
-            .addOnFailureListener { UserHandler.initiateUserDetails() }
-            .addOnSuccessListener { result ->
-                temptext = result.toObject<UserDetails>()
-                binding.textHome.text = temptext?.settings?.tempstuff!!
-            }
+
+        UserHandler.userDetails(fun(u: UserDetails) {
+            temptext = u
+            binding.textHome.text = temptext?.settings?.tempstuff!!
+        }, fun() {
+            UserHandler.initiateUserDetails()
+        })
 
         binding.textView2.text = UserHandler.userName;
         binding.textView3.text = UserHandler.userId;

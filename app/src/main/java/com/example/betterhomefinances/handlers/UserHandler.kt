@@ -5,7 +5,9 @@ import com.example.betterhomefinances.handlers.FirestoreHandler.users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.toObject
 
+typealias UserReference = String
 
 data class UserDetails(
     var settings: UserSettings? = null,
@@ -26,6 +28,10 @@ object UserHandler {
 
     val userReference: DocumentReference get() = users.document(userId.toString())
 
+    fun userDetails(callback: (UserDetails) -> Unit, failureCallback: () -> Unit) = userReference
+        .get()
+        .addOnSuccessListener { result -> result.toObject<UserDetails>()?.let { callback(it) } }
+        .addOnFailureListener { failureCallback() }
 
     fun initiateUserDetails() {
         val data = UserDetails(

@@ -3,15 +3,18 @@ package com.example.betterhomefinances.handlers
 import android.util.Log
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.example.betterhomefinances.handlers.FirestoreHandler.groups
+import com.example.betterhomefinances.handlers.FirestoreHandler.ref
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.toObject
+
+typealias TransactionReference = String
 
 data class Transaction(
     val value: Double,
     val lender: String,
     val timestamp: Timestamp,
-    val borrowers: HashMap<String, Double>,
+    val borrowers: HashMap<UserReference, Double>,
     val title: String,
     val description: String,
     val category: String
@@ -27,7 +30,7 @@ object TransactionHandler {
 
 
     fun createTransaction(
-        groupPath: String,
+        groupReference: String,
         lender: String,
         title: String,
         value: Double,
@@ -37,8 +40,8 @@ object TransactionHandler {
     ) {
 
         db.runTransaction { transaction ->
-            val groupRef = db.document(groupPath)
-            var group = transaction.get(groupRef).toObject<Group>()
+            val groupRef = ref(groupReference)
+            val group = transaction.get(groupRef).toObject<Group>()
 
             val b = group?.balance?.balances
 
@@ -60,7 +63,7 @@ object TransactionHandler {
 
             group?.balance?.timestamp = Timestamp.now()
             if (b != null) {
-                group?.balance?.balances = b
+                group.balance.balances = b
             }
             if (group != null) {
                 transaction.set(groupRef, group)
@@ -74,7 +77,7 @@ object TransactionHandler {
         }.addOnSuccessListener { Log.d(TAG, "transaction done") }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
 
-
+        // TODO: add paybacks calculation
     }
 
 }
