@@ -12,7 +12,7 @@ typealias TransactionReference = String
 
 data class Transaction(
     val value: Double,
-    val lender: String,
+    val lender: UserReference,
     val timestamp: Timestamp,
     val borrowers: HashMap<UserReference, Double>,
     val title: String,

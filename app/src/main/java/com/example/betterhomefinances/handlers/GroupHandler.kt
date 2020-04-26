@@ -10,7 +10,7 @@ typealias GroupReference = String
 
 data class Group(
     val name: String? = null,
-    val members: ArrayList<String> = arrayListOf(),
+    val members: ArrayList<UserReference> = arrayListOf(),
     val balance: Balance = Balance()
 )
 
@@ -24,12 +24,12 @@ object GroupHandler {
             .add(
                 Group(
                     "TEST_GROUP",
-                    arrayListOf(UserHandler.userReference.path),
+                    arrayListOf(UserHandler.currentUserReference.path),
                     Balance(HashMap(), ArrayList(), Timestamp.now())
                 )
             )
             .addOnSuccessListener { documentReference ->
-                UserHandler.userReference.update(
+                UserHandler.currentUserReference.update(
                     "memberOfGroups",
                     FieldValue.arrayUnion(documentReference)
                 )

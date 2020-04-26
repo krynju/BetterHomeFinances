@@ -22,13 +22,13 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-
-        UserHandler.userDetails(fun(u: UserDetails) {
-            temptext = u
-            binding.textHome.text = temptext?.settings?.tempstuff!!
-        }, fun() {
-            UserHandler.initiateUserDetails()
-        })
+        UserHandler.userDetails(
+            fun(u: UserDetails) {
+                temptext = u
+                binding.textHome.text = temptext?.settings?.tempstuff!!
+            }, fun() {
+                UserHandler.initiateUserDetails()
+            })
 
         binding.textView2.text = UserHandler.userName;
         binding.textView3.text = UserHandler.userId;

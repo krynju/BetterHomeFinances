@@ -10,8 +10,8 @@ import com.google.firebase.firestore.ktx.toObject
 typealias UserReference = String
 
 data class UserDetails(
-    var settings: UserSettings? = null,
-    var memberOfGroups: ArrayList<String> = ArrayList<String>()
+    var settings: UserSettings? = UserSettings(),
+    var memberOfGroups: ArrayList<GroupReference> = ArrayList()
 )
 
 data class UserSettings(
@@ -19,16 +19,17 @@ data class UserSettings(
 )
 
 object UserHandler {
-    private val TAG = "UserHandler.kt"
-    var auth = FirebaseAuth.getInstance()
+    private const val TAG = "UserHandler.kt"
+    private val auth = FirebaseAuth.getInstance()
 
     val currentUser get() = auth.currentUser
     val userName: String? get() = currentUser?.displayName
     val userId: String? get() = currentUser?.uid
 
-    val userReference: DocumentReference get() = users.document(userId.toString())
+    val currentUserReference: DocumentReference get() = users.document(userId.toString())
 
-    fun userDetails(callback: (UserDetails) -> Unit, failureCallback: () -> Unit) = userReference
+    fun userDetails(callback: (UserDetails) -> Unit, failureCallback: () -> Unit) =
+        currentUserReference
         .get()
         .addOnSuccessListener { result -> result.toObject<UserDetails>()?.let { callback(it) } }
         .addOnFailureListener { failureCallback() }

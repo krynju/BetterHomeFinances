@@ -6,8 +6,8 @@ import com.google.firebase.ktx.Firebase
 object FirestoreHandler {
     val db = Firebase.firestore
 
-    var users = db.collection("users")
-    var groups = db.collection("groups")
+    val users = db.collection("users")
+    val groups = db.collection("groups")
 
     fun ref(ref: String) = db.document(ref)
 

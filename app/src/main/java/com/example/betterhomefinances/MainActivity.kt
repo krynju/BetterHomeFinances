@@ -16,7 +16,7 @@ import com.example.betterhomefinances.databinding.ActivityMainBinding
 import com.example.betterhomefinances.dummy.DummyContent
 import com.example.betterhomefinances.handlers.FirestoreHandler
 import com.example.betterhomefinances.handlers.TransactionHandler
-import com.example.betterhomefinances.handlers.UserHandler.userReference
+import com.example.betterhomefinances.handlers.UserHandler.currentUserReference
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -42,13 +42,13 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
             TransactionHandler.createTransaction(
                 groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
                 borrowers = hashMapOf(
-                    userReference.path to 5.0,
+                    currentUserReference.path to 5.0,
                     "users/uNMjYrRUfhDiGUboqD79" to 5.0
                 ),
                 title = "TEST TRANSACTION",
                 category = "TEST CATEGORY",
                 description = "yeet",
-                lender = userReference.path,
+                lender = currentUserReference.path,
                 value = 10.0
             )
 
