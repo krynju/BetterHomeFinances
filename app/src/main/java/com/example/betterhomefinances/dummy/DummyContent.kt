@@ -46,6 +46,11 @@ object DummyContent {
 
     }
 
+    fun getContent(callback: (List<Group>) -> Unit) {
+        FirestoreHandler.groups.get()
+            .addOnSuccessListener { result -> callback(result.map { it.toObject<Group>() }) }
+    }
+
     private fun addItem(item: DummyItem) {
         ITEMS.add(item)
         ITEM_MAP.put(item.id, item)

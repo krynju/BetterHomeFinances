@@ -62,9 +62,14 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
         val navController =
             findNavController(R.id.nav_host_fragment)
 
-        appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
-            .setDrawerLayout(drawerLayout)
-            .build()
+//        appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
+//            .setDrawerLayout(drawerLayout)
+//            .build()
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_home, R.id.nav_groups, R.id.nav_slideshow
+            ), drawerLayout
+        )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)

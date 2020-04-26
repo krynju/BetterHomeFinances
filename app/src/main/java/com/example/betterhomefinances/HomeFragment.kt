@@ -26,9 +26,11 @@ class HomeFragment : Fragment() {
             fun(u: UserDetails) {
                 temptext = u
                 binding.textHome.text = temptext?.settings?.tempstuff!!
-            }, fun() {
+            },
+            fun() {
                 UserHandler.initiateUserDetails()
-            })
+            }
+        )
 
         binding.textView2.text = UserHandler.userName;
         binding.textView3.text = UserHandler.userId;
