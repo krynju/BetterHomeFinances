@@ -7,6 +7,7 @@ import com.example.betterhomefinances.handlers.FirestoreHandler.ref
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.toObject
+import kotlin.math.abs
 
 typealias TransactionReference = String
 
@@ -44,6 +45,7 @@ object TransactionHandler {
             val group = transaction.get(groupRef).toObject<Group>()
 
             val b = group?.balance?.balances
+            val p = ArrayList<Payback>()
 
             if (b != null) {
                 if (b.containsKey(lender)) {
@@ -59,10 +61,35 @@ object TransactionHandler {
                         b[borrower] = -borrowers[borrower]!!
                     }
                 }
-            }
 
-            group?.balance?.timestamp = Timestamp.now()
-            if (b != null) {
+                val bb = b.toMutableMap()
+                val positiveKeys =
+                    bb.filterValues { it >= 0.01 }.toList().sortedByDescending { it.second }
+                        .map { it.first }
+                val negativeKeys =
+                    bb.filterValues { it <= -0.01 }.toList().sortedBy { it.second }.map { it.first }
+
+                for (pKey in positiveKeys) {
+                    for (nKey in negativeKeys) {
+                        val pos = bb[pKey]!!
+                        val neg = bb[nKey]!!
+                        if (abs(neg) >= 0.01) {
+                            if (pos >= abs(neg)) {
+                                bb[pKey] = pos + neg
+                                bb[nKey] = 0.0
+                                //add a pending transaction for abs(neg)
+                                p.add(Payback(nKey, pKey, abs(neg)))
+                            } else {
+                                bb[nKey] = neg + pos
+                                bb[pKey] = 0.0
+                                //add a pending transaction for abs(pos)
+                                p.add(Payback(nKey, pKey, pos))
+                            }
+                        }
+                    }
+                }
+                group.balance.paybacks = p
+                group.balance.timestamp = Timestamp.now()
                 group.balance.balances = b
             }
             if (group != null) {
@@ -73,11 +100,8 @@ object TransactionHandler {
                 Transaction(value, lender, Timestamp.now(), borrowers, title, description, category)
             )
             null
-
         }.addOnSuccessListener { Log.d(TAG, "transaction done") }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
-
-        // TODO: add paybacks calculation
     }
 
 }
