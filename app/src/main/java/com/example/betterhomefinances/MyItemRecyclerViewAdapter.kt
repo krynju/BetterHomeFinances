@@ -10,6 +10,7 @@ import com.example.betterhomefinances.ItemFragment.OnListFragmentInteractionList
 import com.example.betterhomefinances.dummy.DummyContent
 import com.example.betterhomefinances.dummy.DummyContent.DummyItem
 import com.example.betterhomefinances.handlers.Group
+import com.example.betterhomefinances.handlers.GroupReference
 import kotlinx.android.synthetic.main.fragment_item.view.*
 
 /**
@@ -26,14 +27,14 @@ class MyItemRecyclerViewAdapter(
     private val mOnClickListener: View.OnClickListener
 
 
-    private var dataSet: List<Group> = listOf()
+    private var dataSet: List<Pair<GroupReference, Group>> = listOf()
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyItem
+            val item = v.tag as Pair<GroupReference, Group>
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onListFragmentInteraction(v, item.first)
         }
 
         DummyContent.getContent {
@@ -52,8 +53,8 @@ class MyItemRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataSet[position]
-        holder.mIdView.text = item.name
-        holder.mContentView.text = item.name
+        holder.mIdView.text = item.second.name
+        holder.mContentView.text = item.second.name
 
         with(holder.mView) {
             tag = item

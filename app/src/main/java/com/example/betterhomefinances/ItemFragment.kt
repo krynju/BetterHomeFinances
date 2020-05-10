@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betterhomefinances.dummy.DummyContent
-import com.example.betterhomefinances.dummy.DummyContent.DummyItem
 
 /**
  * A fragment representing a list of Items.
@@ -50,20 +49,6 @@ class ItemFragment : Fragment() {
             }
         }
 
-//        var userDetails : UserDetails;
-//        UserHandler.userReference
-//            .get()
-//            .addOnSuccessListener{result ->
-//                Log.d(TAG, "$result")
-//
-//                userDetails = result.toObject<UserDetails>()!!
-//
-//                GroupHandler.group(userDetails.memberOfGroups[0]).collection("transactions").get()
-//                    .addOnSuccessListener { result2 ->
-//                        Log.d(TAG, "$result2")
-//                    }
-//            }
-//            .addOnFailureListener{}
 
         return view
     }
@@ -95,7 +80,7 @@ class ItemFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(v: View, item: String?)
     }
 
     companion object {

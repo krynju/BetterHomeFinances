@@ -10,8 +10,9 @@
         android:name="com.example.betterhomefinances.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
-
-
+        <action
+            android:id="@+id/action_nav_home_to_nav_groupDetails"
+            app:destination="@id/nav_groupDetails" />
     </fragment>
 
 
@@ -19,11 +20,22 @@
         android:id="@+id/nav_groups"
         android:name="com.example.betterhomefinances.ItemFragment"
         android:label="@string/menu_groups"
-        tools:layout="@layout/fragment_item_list" />
+        tools:layout="@layout/fragment_item_list">
+        <action
+            android:id="@+id/action_nav_groups_to_nav_groupDetails"
+            app:destination="@id/nav_groupDetails" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.betterhomefinances.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_groupDetails"
+        android:name="com.example.betterhomefinances.GroupDetails"
+        android:label="fragment_group_details"
+        tools:layout="@layout/fragment_group_details">
+        <argument android:name="groupReferencePath" />
+    </fragment>
 </navigation>

@@ -4,16 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
-import com.example.betterhomefinances.dummy.DummyContent
 import com.example.betterhomefinances.handlers.FirestoreHandler
 import com.example.betterhomefinances.handlers.TransactionHandler
 import com.example.betterhomefinances.handlers.UserHandler.currentUserReference
@@ -27,7 +28,8 @@ import kotlinx.android.synthetic.main.app_bar_main.view.*
 class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteractionListener {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    private val TAG = "MainActivity"
+    private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -38,18 +40,20 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
         val fab: FloatingActionButton = binding.root.fab
         fab.setOnClickListener { view ->
 //            GroupHandler.createGroup()
+            val b = hashMapOf(
+                currentUserReference.path to 5.0,
+                "users/uNMjYrRUfhDiGUboqD79" to 5.0,
+                "users/kVDZCSrD4UueSOq8bCzk" to 7.5
+            )
 
             TransactionHandler.createTransaction(
                 groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
-                borrowers = hashMapOf(
-                    currentUserReference.path to 5.0,
-                    "users/uNMjYrRUfhDiGUboqD79" to 5.0
-                ),
+                borrowers = b,
                 title = "TEST TRANSACTION",
                 category = "TEST CATEGORY",
                 description = "yeet",
-                lender = currentUserReference.path,
-                value = 10.0
+                lender = "users/kVDZCSrD4UueSOq8bCzk",
+                value = 17.5
             )
 
 
@@ -59,8 +63,8 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
 
         val drawerLayout: DrawerLayout = binding.root.drawer_layout
         val navView: NavigationView = binding.navView
-        val navController =
-            findNavController(R.id.nav_host_fragment)
+
+        navController = findNavController(R.id.nav_host_fragment)
 
 //        appBarConfiguration = AppBarConfiguration.Builder(navController.graph)
 //            .setDrawerLayout(drawerLayout)
@@ -107,7 +111,9 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
     }
 
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-        TODO("Not yet implemented")
+    override fun onListFragmentInteraction(v: View, item: String?) {
+
+        val action = ItemFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
+        v.findNavController().navigate(action)
     }
 }
