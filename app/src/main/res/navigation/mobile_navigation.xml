@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_groupDetails"
             app:destination="@id/nav_groupDetails" />
+        <action
+            android:id="@+id/action_nav_home_to_createTransaction"
+            app:destination="@id/createTransaction" />
     </fragment>
 
 
@@ -24,6 +27,9 @@
         <action
             android:id="@+id/action_nav_groups_to_nav_groupDetails"
             app:destination="@id/nav_groupDetails" />
+        <action
+            android:id="@+id/action_nav_groups_to_createGroup"
+            app:destination="@id/createGroup" />
     </fragment>
 
     <fragment
@@ -37,5 +43,35 @@
         android:label="fragment_group_details"
         tools:layout="@layout/fragment_group_details">
         <argument android:name="groupReferencePath" />
+        <action
+            android:id="@+id/action_nav_groupDetails_to_transactionsFragment"
+            app:destination="@id/transactionsFragment" />
+        <action
+            android:id="@+id/action_nav_groupDetails_to_createTransaction"
+            app:destination="@id/createTransaction" />
     </fragment>
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.example.betterhomefinances.TransactionsFragment"
+        android:label="fragment_transactions_list"
+        tools:layout="@layout/fragment_transactions_list">
+        <action
+            android:id="@+id/action_transactionsFragment_to_transactionDetails"
+            app:destination="@id/transactionDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionDetails"
+        android:name="com.example.betterhomefinances.TransactionDetails"
+        android:label="fragment_transaction_details"
+        tools:layout="@layout/fragment_transaction_details" />
+    <fragment
+        android:id="@+id/createGroup"
+        android:name="com.example.betterhomefinances.CreateGroup"
+        android:label="fragment_create_group"
+        tools:layout="@layout/fragment_create_group" />
+    <fragment
+        android:id="@+id/createTransaction"
+        android:name="com.example.betterhomefinances.CreateTransaction"
+        android:label="fragment_create_transaction"
+        tools:layout="@layout/fragment_create_transaction" />
 </navigation>

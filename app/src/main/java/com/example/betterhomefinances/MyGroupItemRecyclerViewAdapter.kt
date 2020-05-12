@@ -7,22 +7,22 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betterhomefinances.ItemFragment.OnListFragmentInteractionListener
-import com.example.betterhomefinances.dummy.DummyContent
-import com.example.betterhomefinances.dummy.DummyContent.DummyItem
+import com.example.betterhomefinances.dummy.GroupContent
+import com.example.betterhomefinances.dummy.GroupContent.GroupItem
 import com.example.betterhomefinances.handlers.Group
 import com.example.betterhomefinances.handlers.GroupReference
 import kotlinx.android.synthetic.main.fragment_item.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [GroupItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
-class MyItemRecyclerViewAdapter(
-    private val contentHandler: DummyContent,
-    private val mValues: List<DummyItem>,
+class MyGroupItemRecyclerViewAdapter(
+    private val contentHandler: GroupContent,
+    private val mValues: List<GroupItem>,
     private val mListener: OnListFragmentInteractionListener?
-) : RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MyGroupItemRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
@@ -37,7 +37,7 @@ class MyItemRecyclerViewAdapter(
             mListener?.onListFragmentInteraction(v, item.first)
         }
 
-        DummyContent.getContent {
+        GroupContent.getContent {
             dataSet = it
             notifyDataSetChanged()
         }
