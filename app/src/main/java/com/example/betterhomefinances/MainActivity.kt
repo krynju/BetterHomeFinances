@@ -112,7 +112,6 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
 
 
     override fun onListFragmentInteraction(v: View, item: String?) {
-
         val action = ItemFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
         v.findNavController().navigate(action)
     }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.betterhomefinances.databinding.FragmentGroupDetailsBinding
 import com.example.betterhomefinances.handlers.Group
 
 // TODO: Rename parameter arguments, choose names that match
@@ -21,7 +22,9 @@ class GroupDetails : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private var groupReferencePath: String? = null
+    private var _binding: FragmentGroupDetailsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var group: Group;
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +36,8 @@ class GroupDetails : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
 
+        groupReferencePath = arguments?.get("groupReferencePath") as String?
+
 
     }
 
@@ -41,7 +46,11 @@ class GroupDetails : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group_details, container, false)
+        _binding = FragmentGroupDetailsBinding.inflate(inflater, container, false)
+
+        binding.groupName.text = groupReferencePath
+
+        return binding.root
     }
 
     companion object {

@@ -36,7 +36,9 @@ object GroupContent {
         FirestoreHandler.groups.get().addOnSuccessListener { result ->
 
             for (docRef in result.documents) {
-                docRef.toObject<Group>()?.let { groups.add(Pair(docRef.toString(), it)) }
+//                docRef.toObject<Group>()?.let { groups.add(Pair(it.toString(), it)) }
+
+                groups.add(Pair(docRef.reference.path, docRef.toObject<Group>()!!))
             }
 
 
@@ -52,7 +54,7 @@ object GroupContent {
             .addOnSuccessListener { result ->
                 callback(result.map {
                     Pair(
-                        it.toString(),
+                        it.reference.path,
                         it.toObject<Group>()
                     )
                 })
