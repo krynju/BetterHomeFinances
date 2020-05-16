@@ -1,5 +1,7 @@
 package com.example.betterhomefinances.handlers
 
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
@@ -14,7 +16,22 @@ data class Group(
     val balance: Balance = Balance()
 )
 
+data class GroupItem(
+    val reference: GroupReference,
+    val group: Group
+)
+
 object GroupHandler {
+
+    var listeners = mutableListOf<(Nothing) -> Unit>()
+    var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
+
+
+    init {
+        getGroupsRefPair {
+            data.addAll(it)
+        }
+    }
 
     fun group(id: String) = FirestoreHandler.groups.document(id)
     fun group(document_reference: DocumentReference) = document_reference
@@ -49,5 +66,17 @@ object GroupHandler {
 //            transaction.delete(ref)
             //TODO: need to create a Function for deleting subcollections :/
         }
+    }
+
+    fun getGroupsRefPair(callback: (List<GroupItem>) -> Unit) {
+        FirestoreHandler.groups.get()
+            .addOnSuccessListener { result ->
+                callback(result.map {
+                    GroupItem(
+                        it.reference.path,
+                        it.toObject<Group>()
+                    )
+                })
+            }
     }
 }

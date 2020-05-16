@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.dummy.GroupContent
+import com.example.betterhomefinances.handlers.GroupHandler
 
 /**
  * A fragment representing a list of Items.
@@ -45,7 +45,7 @@ class ItemFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyGroupItemRecyclerViewAdapter(GroupContent, GroupContent.ITEMS, listener)
+                adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
             }
         }
 

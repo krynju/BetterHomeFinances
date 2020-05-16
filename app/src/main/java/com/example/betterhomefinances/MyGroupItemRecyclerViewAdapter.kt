@@ -5,42 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.databinding.ObservableList
+import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betterhomefinances.ItemFragment.OnListFragmentInteractionListener
-import com.example.betterhomefinances.dummy.GroupContent
-import com.example.betterhomefinances.dummy.GroupContent.GroupItem
-import com.example.betterhomefinances.handlers.Group
-import com.example.betterhomefinances.handlers.GroupReference
+import com.example.betterhomefinances.handlers.GroupHandler
+import com.example.betterhomefinances.handlers.GroupItem
 import kotlinx.android.synthetic.main.fragment_item.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [GroupItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [GroupItemDUMMYTOREMOVE] and makes a call to the
  * specified [OnListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
 class MyGroupItemRecyclerViewAdapter(
-    private val contentHandler: GroupContent,
-    private val mValues: List<GroupItem>,
+    private val contentHandler: GroupHandler,
     private val mListener: OnListFragmentInteractionListener?
 ) : RecyclerView.Adapter<MyGroupItemRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
+    private var mOnListChangedCallback: OnListChangedCallback<ObservableList<GroupItem>>
 
-
-    private var dataSet: List<Pair<GroupReference, Group>> = listOf()
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Pair<GroupReference, Group>
+            val item = v.tag as GroupItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(v, item.first)
+            mListener?.onListFragmentInteraction(v, item.reference)
         }
 
-        GroupContent.getContent {
-            dataSet = it
-            notifyDataSetChanged()
-        }
+        mOnListChangedCallback = TEST_CLASS(this)
+
+        GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
 
 
     }
@@ -52,9 +49,9 @@ class MyGroupItemRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = dataSet[position]
-        holder.mIdView.text = item.second.name
-        holder.mContentView.text = item.second.name
+        val item = GroupHandler.data[position]
+        holder.mIdView.text = item.group.name
+        holder.mContentView.text = item.group.name
 
         with(holder.mView) {
             tag = item
@@ -62,7 +59,7 @@ class MyGroupItemRecyclerViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int = dataSet.size
+    override fun getItemCount(): Int = GroupHandler.data.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number
@@ -74,3 +71,58 @@ class MyGroupItemRecyclerViewAdapter(
         }
     }
 }
+
+private class TEST_CLASS(myGroupItemRecyclerViewAdapter: MyGroupItemRecyclerViewAdapter) :
+    ObservableList.OnListChangedCallback<ObservableList<GroupItem>>(
+    ) {
+    var MTEST: MyGroupItemRecyclerViewAdapter = myGroupItemRecyclerViewAdapter
+    override fun onChanged(sender: ObservableList<GroupItem>?) {
+//        TODO("Not yet implemented")
+        MTEST.notifyDataSetChanged()
+    }
+
+    override fun onItemRangeRemoved(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.notifyDataSetChanged()
+
+    }
+
+    override fun onItemRangeMoved(
+        sender: ObservableList<GroupItem>?,
+        fromPosition: Int,
+        toPosition: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.notifyDataSetChanged()
+
+    }
+
+    override fun onItemRangeInserted(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.notifyDataSetChanged()
+
+    }
+
+    override fun onItemRangeChanged(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.notifyDataSetChanged()
+
+    }
+
+}
+
+
+
