@@ -21,9 +21,9 @@
 
     <fragment
         android:id="@+id/nav_groups"
-        android:name="com.example.betterhomefinances.ItemFragment"
+        android:name="com.example.betterhomefinances.GroupListFragment"
         android:label="@string/menu_groups"
-        tools:layout="@layout/fragment_item_list">
+        tools:layout="@layout/fragment_group_list">
         <action
             android:id="@+id/action_nav_groups_to_nav_groupDetails"
             app:destination="@id/nav_groupDetails" />
@@ -39,7 +39,7 @@
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_groupDetails"
-        android:name="com.example.betterhomefinances.GroupDetails"
+        android:name="com.example.betterhomefinances.GroupDetailsFragment"
         android:label="fragment_group_details"
         tools:layout="@layout/fragment_group_details">
         <argument android:name="groupReferencePath" />
@@ -73,5 +73,7 @@
         android:id="@+id/createTransaction"
         android:name="com.example.betterhomefinances.CreateTransaction"
         android:label="fragment_create_transaction"
-        tools:layout="@layout/fragment_create_transaction" />
+        tools:layout="@layout/fragment_create_transaction">
+        <argument android:name="groupReferencePath" />
+    </fragment>
 </navigation>

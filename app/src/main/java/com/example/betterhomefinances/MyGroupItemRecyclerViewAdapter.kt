@@ -8,10 +8,10 @@ import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.ItemFragment.OnListFragmentInteractionListener
+import com.example.betterhomefinances.GroupListFragment.OnListFragmentInteractionListener
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
-import kotlinx.android.synthetic.main.fragment_item.view.*
+import kotlinx.android.synthetic.main.fragment_group_item.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [GroupItemDUMMYTOREMOVE] and makes a call to the
@@ -32,10 +32,10 @@ class MyGroupItemRecyclerViewAdapter(
             val item = v.tag as GroupItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(v, item.reference)
+            mListener?.onGroupListFragmentInteraction(v, item.reference)
         }
 
-        mOnListChangedCallback = TEST_CLASS(this)
+        mOnListChangedCallback = MyOnListChangedCallback(this)
 
         GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
 
@@ -44,7 +44,7 @@ class MyGroupItemRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_item, parent, false)
+            .inflate(R.layout.fragment_group_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -72,7 +72,7 @@ class MyGroupItemRecyclerViewAdapter(
     }
 }
 
-private class TEST_CLASS(myGroupItemRecyclerViewAdapter: MyGroupItemRecyclerViewAdapter) :
+private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupItemRecyclerViewAdapter) :
     ObservableList.OnListChangedCallback<ObservableList<GroupItem>>(
     ) {
     var MTEST: MyGroupItemRecyclerViewAdapter = myGroupItemRecyclerViewAdapter

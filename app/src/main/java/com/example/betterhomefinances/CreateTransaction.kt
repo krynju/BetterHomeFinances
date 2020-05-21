@@ -5,6 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.betterhomefinances.databinding.FragmentCreateTransactionBinding
+import com.example.betterhomefinances.handlers.FirestoreHandler
+import com.example.betterhomefinances.handlers.TransactionHandler
+import com.example.betterhomefinances.handlers.UserHandler
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,15 +22,15 @@ private const val ARG_PARAM2 = "param2"
  */
 class CreateTransaction : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var transactionName = "transaction_Name"
+
+    private var _binding: FragmentCreateTransactionBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -34,7 +38,32 @@ class CreateTransaction : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_transaction, container, false)
+        _binding = FragmentCreateTransactionBinding.inflate(inflater, container, false)
+
+
+        binding.addButton.setOnClickListener { createTransaction(it) }
+
+        return binding.root
+    }
+
+    fun createTransaction(v: View) {
+        val tran_value = binding.editText3.text.toString().toDoubleOrNull() ?: return
+
+        val b = hashMapOf(
+            UserHandler.currentUserReference.path to tran_value / 3.0,
+            "users/uNMjYrRUfhDiGUboqD79" to tran_value / 3.0,
+            "users/kVDZCSrD4UueSOq8bCzk" to tran_value / 3.0
+        )
+
+        TransactionHandler.createTransaction(
+            groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
+            borrowers = b,
+            title = binding.editText.text.toString(),
+            category = "TEST CATEGORY",
+            description = "yeet",
+            lender = "users/kVDZCSrD4UueSOq8bCzk",
+            value = tran_value / 3.0
+        )
     }
 
     companion object {

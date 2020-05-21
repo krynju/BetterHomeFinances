@@ -14,9 +14,9 @@ import com.example.betterhomefinances.handlers.GroupHandler
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [ItemFragment.OnListFragmentInteractionListener] interface.
+ * [GroupListFragment.OnListFragmentInteractionListener] interface.
  */
-class ItemFragment : Fragment() {
+class GroupListFragment : Fragment() {
     private val TAG = "ItemFragment.kt"
     // TODO: Customize parameters
     private var columnCount = 1
@@ -36,9 +36,8 @@ class ItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_group_list, container, false)
 
-        // Set the adapter
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = when {
@@ -48,8 +47,6 @@ class ItemFragment : Fragment() {
                 adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
             }
         }
-
-
         return view
     }
 
@@ -67,20 +64,9 @@ class ItemFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson
-     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
+
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onListFragmentInteraction(v: View, item: String?)
+        fun onGroupListFragmentInteraction(v: View, item: String?)
     }
 
     companion object {
@@ -91,7 +77,7 @@ class ItemFragment : Fragment() {
         // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
-            ItemFragment().apply {
+            GroupListFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }

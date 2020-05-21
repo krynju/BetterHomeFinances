@@ -25,7 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
-class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), GroupListFragment.OnListFragmentInteractionListener {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val TAG = "MainActivity"
@@ -111,8 +111,8 @@ class MainActivity : AppCompatActivity(), ItemFragment.OnListFragmentInteraction
     }
 
 
-    override fun onListFragmentInteraction(v: View, item: String?) {
-        val action = ItemFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
+    override fun onGroupListFragmentInteraction(v: View, item: String?) {
+        val action = GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
         v.findNavController().navigate(action)
     }
 }
