@@ -15,7 +15,7 @@
             app:destination="@id/nav_groupDetails" />
         <action
             android:id="@+id/action_nav_home_to_createTransaction"
-            app:destination="@id/createTransaction" />
+            app:destination="@id/nav_createTransaction" />
     </fragment>
 
 
@@ -29,7 +29,7 @@
             app:destination="@id/nav_groupDetails" />
         <action
             android:id="@+id/action_nav_groups_to_createGroup"
-            app:destination="@id/createGroup" />
+            app:destination="@id/nav_createGroup" />
     </fragment>
 
     <fragment
@@ -45,35 +45,35 @@
         <argument android:name="groupReferencePath" />
         <action
             android:id="@+id/action_nav_groupDetails_to_transactionsFragment"
-            app:destination="@id/transactionsFragment" />
+            app:destination="@id/nav_transactionListFragment" />
         <action
             android:id="@+id/action_nav_groupDetails_to_createTransaction"
-            app:destination="@id/createTransaction" />
+            app:destination="@id/nav_createTransaction" />
     </fragment>
     <fragment
-        android:id="@+id/transactionsFragment"
+        android:id="@+id/nav_transactionListFragment"
         android:name="com.example.betterhomefinances.TransactionListFragment"
-        android:label="fragment_transactions_list"
-        tools:layout="@layout/fragment_transactions_list">
+        android:label="fragment_transaction_list"
+        tools:layout="@layout/fragment_transaction_list">
         <action
             android:id="@+id/action_transactionsFragment_to_transactionDetails"
-            app:destination="@id/transactionDetails" />
+            app:destination="@id/nav_transactionDetails" />
         <argument android:name="groupReferencePath" />
     </fragment>
     <fragment
-        android:id="@+id/transactionDetails"
+        android:id="@+id/nav_transactionDetails"
         android:name="com.example.betterhomefinances.TransactionDetails"
         android:label="fragment_transaction_details"
         tools:layout="@layout/fragment_transaction_details">
         <argument android:name="transactionReferencePath" />
     </fragment>
     <fragment
-        android:id="@+id/createGroup"
+        android:id="@+id/nav_createGroup"
         android:name="com.example.betterhomefinances.CreateGroup"
         android:label="fragment_create_group"
         tools:layout="@layout/fragment_create_group" />
     <fragment
-        android:id="@+id/createTransaction"
+        android:id="@+id/nav_createTransaction"
         android:name="com.example.betterhomefinances.CreateTransaction"
         android:label="fragment_create_transaction"
         tools:layout="@layout/fragment_create_transaction">

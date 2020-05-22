@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betterhomefinances.dummy.DummyContent.DummyItem
-import kotlinx.android.synthetic.main.fragment_transactions.view.*
+import kotlinx.android.synthetic.main.fragment_transaction_item.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
@@ -32,7 +32,7 @@ class MyTransactionsRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.fragment_transactions, parent, false)
+            .inflate(R.layout.fragment_transaction_item, parent, false)
         return ViewHolder(view)
     }
 

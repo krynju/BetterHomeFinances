@@ -23,9 +23,7 @@ data class GroupItem(
 
 object GroupHandler {
 
-    var listeners = mutableListOf<(Nothing) -> Unit>()
     var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
-
 
     init {
         getGroupsRefPair {
@@ -68,7 +66,7 @@ object GroupHandler {
         }
     }
 
-    fun getGroupsRefPair(callback: (List<GroupItem>) -> Unit) {
+    private fun getGroupsRefPair(callback: (List<GroupItem>) -> Unit) {
         FirestoreHandler.groups.get()
             .addOnSuccessListener { result ->
                 callback(result.map {

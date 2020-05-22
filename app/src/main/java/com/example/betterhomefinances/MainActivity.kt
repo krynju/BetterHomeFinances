@@ -14,9 +14,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
-import com.example.betterhomefinances.handlers.FirestoreHandler
-import com.example.betterhomefinances.handlers.TransactionHandler
-import com.example.betterhomefinances.handlers.UserHandler.currentUserReference
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
@@ -39,21 +36,21 @@ class MainActivity : AppCompatActivity() {
         val fab: FloatingActionButton = binding.root.fab
         fab.setOnClickListener { view ->
 //            GroupHandler.createGroup()
-            val b = hashMapOf(
-                currentUserReference.path to 5.0,
-                "users/uNMjYrRUfhDiGUboqD79" to 5.0,
-                "users/kVDZCSrD4UueSOq8bCzk" to 7.5
-            )
-
-            TransactionHandler.createTransaction(
-                groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
-                borrowers = b,
-                title = "TEST TRANSACTION",
-                category = "TEST CATEGORY",
-                description = "yeet",
-                lender = "users/kVDZCSrD4UueSOq8bCzk",
-                value = 17.5
-            )
+//            val b = hashMapOf(
+//                currentUserReference.path to 5.0,
+//                "users/uNMjYrRUfhDiGUboqD79" to 5.0,
+//                "users/kVDZCSrD4UueSOq8bCzk" to 7.5
+//            )
+//
+//            TransactionHandler.createTransaction(
+//                groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
+//                borrowers = b,
+//                title = "TEST TRANSACTION",
+//                category = "TEST CATEGORY",
+//                description = "yeet",
+//                lender = "users/kVDZCSrD4UueSOq8bCzk",
+//                value = 17.5
+//            )
 
 
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

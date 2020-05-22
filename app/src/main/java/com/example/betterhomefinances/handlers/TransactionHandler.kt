@@ -1,6 +1,8 @@
 package com.example.betterhomefinances.handlers
 
 import android.util.Log
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.example.betterhomefinances.handlers.FirestoreHandler.groups
 import com.example.betterhomefinances.handlers.FirestoreHandler.ref
@@ -21,6 +23,12 @@ data class Transaction(
     val category: String
 )
 
+data class TransactionItem(
+    val reference: TransactionReference,
+    val transaction: Transaction
+)
+
+
 object TransactionHandler {
     private val TAG = "TransactionHandler"
     fun transactionsReference(groupId: String) =
@@ -28,6 +36,33 @@ object TransactionHandler {
 
     fun transactionsReference(groupRef: DocumentReference) =
         groupRef.collection("transactions")
+
+
+    var storage: HashMap<GroupReference, TransactionStorage> = hashMapOf()
+
+    fun getInstance(groupRefPath: GroupReference): TransactionStorage {
+        if (storage.containsKey(groupRefPath)) {
+            return storage[groupRefPath]!!
+        } else {
+            storage[groupRefPath] = TransactionStorage(groupRefPath)
+            return storage[groupRefPath]!!
+        }
+    }
+
+    fun getTransactionsRefPair(
+        groupRefPath: GroupReference,
+        callback: (List<TransactionItem>) -> Unit
+    ) {
+        TransactionHandler.transactionsReference(groupRefPath).get()
+            .addOnSuccessListener { result ->
+                callback(result.map {
+                    TransactionItem(
+                        it.reference.path,
+                        it.toObject<Transaction>()
+                    )
+                })
+            }
+    }
 
 
     fun createTransaction(
@@ -39,62 +74,58 @@ object TransactionHandler {
         description: String,
         borrowers: HashMap<String, Double>
     ) {
-
         db.runTransaction { transaction ->
             val groupRef = ref(groupReference)
-            val group = transaction.get(groupRef).toObject<Group>()
+            val group = transaction.get(groupRef).toObject<Group>()!!
 
-            val b = group?.balance?.balances
+            val b = group.balance.balances
             val p = ArrayList<Payback>()
 
-            if (b != null) {
-                if (b.containsKey(lender)) {
-                    b[lender] = value + b[lender]!!
+
+            if (b.containsKey(lender)) {
+                b[lender] = value + b[lender]!!
+            } else {
+                b[lender] = value
+            }
+
+            for (borrower in borrowers.keys) {
+                if (b.containsKey(borrower)) {
+                    b[borrower] = b[borrower]!! - borrowers[borrower]!!
                 } else {
-                    b[lender] = value
+                    b[borrower] = -borrowers[borrower]!!
                 }
+            }
 
-                for (borrower in borrowers.keys) {
-                    if (b.containsKey(borrower)) {
-                        b[borrower] = b[borrower]!! - borrowers[borrower]!!
-                    } else {
-                        b[borrower] = -borrowers[borrower]!!
-                    }
-                }
+            val bb = b.toMutableMap()
+            val positiveKeys =
+                bb.filterValues { it >= 0.01 }.toList().sortedByDescending { it.second }
+                    .map { it.first }
+            val negativeKeys =
+                bb.filterValues { it <= -0.01 }.toList().sortedBy { it.second }.map { it.first }
 
-                val bb = b.toMutableMap()
-                val positiveKeys =
-                    bb.filterValues { it >= 0.01 }.toList().sortedByDescending { it.second }
-                        .map { it.first }
-                val negativeKeys =
-                    bb.filterValues { it <= -0.01 }.toList().sortedBy { it.second }.map { it.first }
-
-                for (pKey in positiveKeys) {
-                    for (nKey in negativeKeys) {
-                        val pos = bb[pKey]!!
-                        val neg = bb[nKey]!!
-                        if (abs(neg) >= 0.01) {
-                            if (pos >= abs(neg)) {
-                                bb[pKey] = pos + neg
-                                bb[nKey] = 0.0
-                                //add a pending transaction for abs(neg)
-                                p.add(Payback(nKey, pKey, abs(neg)))
-                            } else {
-                                bb[nKey] = neg + pos
-                                bb[pKey] = 0.0
-                                //add a pending transaction for abs(pos)
-                                p.add(Payback(nKey, pKey, pos))
-                            }
+            for (pKey in positiveKeys) {
+                for (nKey in negativeKeys) {
+                    val pos = bb[pKey]!!
+                    val neg = bb[nKey]!!
+                    if (abs(neg) >= 0.01) {
+                        if (pos >= abs(neg)) {
+                            bb[pKey] = pos + neg
+                            bb[nKey] = 0.0
+                            p.add(Payback(nKey, pKey, abs(neg)))
+                        } else {
+                            bb[nKey] = neg + pos
+                            bb[pKey] = 0.0
+                            p.add(Payback(nKey, pKey, pos))
                         }
                     }
                 }
-                group.balance.paybacks = p
-                group.balance.timestamp = Timestamp.now()
-                group.balance.balances = b
             }
-            if (group != null) {
-                transaction.set(groupRef, group)
-            }
+            group.balance.paybacks = p
+            group.balance.timestamp = Timestamp.now()
+            group.balance.balances = b
+
+            transaction.set(groupRef, group)
+
             transaction.set(
                 transactionsReference(groupRef).document(),
                 Transaction(value, lender, Timestamp.now(), borrowers, title, description, category)
@@ -105,3 +136,15 @@ object TransactionHandler {
     }
 
 }
+
+
+class TransactionStorage(groupRefPath: GroupReference) {
+    var data: ObservableList<TransactionItem> = ObservableArrayList<TransactionItem>()
+
+    init {
+        TransactionHandler.getTransactionsRefPair(groupRefPath) {
+            data.addAll(it)
+        }
+    }
+}
+
