@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +17,17 @@ import com.example.betterhomefinances.handlers.GroupHandler
  * Activities containing this fragment MUST implement the
  * [GroupListFragment.OnListFragmentInteractionListener] interface.
  */
-class GroupListFragment : Fragment() {
+
+interface OnGroupListFragmentInteractionListener {
+    fun onGroupListFragmentInteraction(v: View, item: String?)
+}
+
+class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener {
     private val TAG = "ItemFragment.kt"
     // TODO: Customize parameters
     private var columnCount = 1
 
-    private var listener: OnListFragmentInteractionListener? = null
+    private var listener: OnGroupListFragmentInteractionListener = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,22 +58,14 @@ class GroupListFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
-        }
     }
 
     override fun onDetach() {
         super.onDetach()
-        listener = null
     }
 
 
-    interface OnListFragmentInteractionListener {
-        fun onGroupListFragmentInteraction(v: View, item: String?)
-    }
+
 
     companion object {
 
@@ -82,5 +80,10 @@ class GroupListFragment : Fragment() {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
+    }
+
+    override fun onGroupListFragmentInteraction(v: View, item: String?) {
+        val action = GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
+        v.findNavController().navigate(action)
     }
 }

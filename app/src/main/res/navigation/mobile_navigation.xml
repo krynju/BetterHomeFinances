@@ -52,18 +52,21 @@
     </fragment>
     <fragment
         android:id="@+id/transactionsFragment"
-        android:name="com.example.betterhomefinances.TransactionsFragment"
+        android:name="com.example.betterhomefinances.TransactionListFragment"
         android:label="fragment_transactions_list"
         tools:layout="@layout/fragment_transactions_list">
         <action
             android:id="@+id/action_transactionsFragment_to_transactionDetails"
             app:destination="@id/transactionDetails" />
+        <argument android:name="groupReferencePath" />
     </fragment>
     <fragment
         android:id="@+id/transactionDetails"
         android:name="com.example.betterhomefinances.TransactionDetails"
         android:label="fragment_transaction_details"
-        tools:layout="@layout/fragment_transaction_details" />
+        tools:layout="@layout/fragment_transaction_details">
+        <argument android:name="transactionReferencePath" />
+    </fragment>
     <fragment
         android:id="@+id/createGroup"
         android:name="com.example.betterhomefinances.CreateGroup"

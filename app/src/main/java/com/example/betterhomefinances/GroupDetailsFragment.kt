@@ -27,9 +27,16 @@ class GroupDetailsFragment : Fragment() {
         _binding = FragmentGroupDetailsBinding.inflate(inflater, container, false)
         binding.groupName.text = groupReferencePath
         binding.button4.setOnClickListener { createTransactionButton(it) }
+        binding.button.setOnClickListener { goToTransactions(it) }
         return binding.root
     }
 
+    fun goToTransactions(v: View) {
+        val action = GroupDetailsFragmentDirections.actionNavGroupDetailsToTransactionsFragment(
+            groupReferencePath!!
+        )
+        v.findNavController().navigate(action)
+    }
 
     fun createTransactionButton(v: View) {
         val action = GroupDetailsFragmentDirections.actionNavGroupDetailsToCreateTransaction(

@@ -8,19 +8,18 @@ import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.GroupListFragment.OnListFragmentInteractionListener
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
 import kotlinx.android.synthetic.main.fragment_group_item.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [GroupItemDUMMYTOREMOVE] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * specified [OnGroupListFragmentInteractionListener].
  * TODO: Replace the implementation with code for your data type.
  */
 class MyGroupItemRecyclerViewAdapter(
     private val contentHandler: GroupHandler,
-    private val mListener: OnListFragmentInteractionListener?
+    private val mListener: OnGroupListFragmentInteractionListener
 ) : RecyclerView.Adapter<MyGroupItemRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener

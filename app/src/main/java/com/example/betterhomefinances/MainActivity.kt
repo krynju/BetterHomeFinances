@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,7 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
-class MainActivity : AppCompatActivity(), GroupListFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val TAG = "MainActivity"
@@ -111,8 +110,4 @@ class MainActivity : AppCompatActivity(), GroupListFragment.OnListFragmentIntera
     }
 
 
-    override fun onGroupListFragmentInteraction(v: View, item: String?) {
-        val action = GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
-        v.findNavController().navigate(action)
-    }
 }
