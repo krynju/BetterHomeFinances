@@ -36,7 +36,7 @@ class MyGroupItemRecyclerViewAdapter(
 
         mOnListChangedCallback = MyOnListChangedCallback(this)
 
-        GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
+        contentHandler.data.addOnListChangedCallback(mOnListChangedCallback)
 
 
     }
@@ -48,7 +48,7 @@ class MyGroupItemRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = GroupHandler.data[position]
+        val item = contentHandler.data[position]
         holder.mIdView.text = item.group.name
         holder.mContentView.text = item.group.name
 
@@ -58,7 +58,7 @@ class MyGroupItemRecyclerViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int = GroupHandler.data.size
+    override fun getItemCount(): Int = contentHandler.data.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number

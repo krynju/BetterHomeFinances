@@ -31,7 +31,12 @@ object GroupHandler {
         }
     }
 
-    fun group(id: String) = FirestoreHandler.groups.document(id)
+    fun transactions(groupRefPath: GroupReference): TransactionStorage {
+        return TransactionHandler.getInstance(groupRefPath)
+    }
+
+    fun group(id: GroupReference) = FirestoreHandler.groups.document(id)
+
     fun group(document_reference: DocumentReference) = document_reference
 
     fun createGroup() {

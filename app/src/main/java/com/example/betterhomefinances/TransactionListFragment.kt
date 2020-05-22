@@ -10,8 +10,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.dummy.DummyContent
 import com.example.betterhomefinances.dummy.DummyContent.DummyItem
+import com.example.betterhomefinances.handlers.GroupReference
+import com.example.betterhomefinances.handlers.TransactionHandler
 
 interface OnTransactionListFragmentInteractionListener {
 
@@ -24,11 +25,13 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
     // TODO: Customize parameters
     private var columnCount = 1
     private val transactionReferencePath: String = "yeet"
+    private var groupReferencePath: GroupReference? = null
 
     private var listenerTransaction: OnTransactionListFragmentInteractionListener = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        groupReferencePath = arguments?.get("groupReferencePath") as String?
 
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
@@ -48,7 +51,9 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyTransactionsRecyclerViewAdapter(DummyContent.ITEMS, listenerTransaction)
+                adapter = MyTransactionsRecyclerViewAdapter(
+                    TransactionHandler.getInstance(groupReferencePath!!), listenerTransaction
+                )
             }
         }
         return view

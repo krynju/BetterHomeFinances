@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
-import com.example.betterhomefinances.handlers.FirestoreHandler.groups
 import com.example.betterhomefinances.handlers.FirestoreHandler.ref
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
@@ -14,13 +13,13 @@ import kotlin.math.abs
 typealias TransactionReference = String
 
 data class Transaction(
-    val value: Double,
-    val lender: UserReference,
-    val timestamp: Timestamp,
-    val borrowers: HashMap<UserReference, Double>,
-    val title: String,
-    val description: String,
-    val category: String
+    val value: Double = 0.0,
+    val lender: UserReference? = null,
+    val timestamp: Timestamp? = null,
+    val borrowers: HashMap<UserReference, Double> = hashMapOf(),
+    val title: String = "",
+    val description: String = "",
+    val category: String = ""
 )
 
 data class TransactionItem(
@@ -31,8 +30,15 @@ data class TransactionItem(
 
 object TransactionHandler {
     private val TAG = "TransactionHandler"
-    fun transactionsReference(groupId: String) =
-        groups.document(groupId).collection("transactions")
+
+    //    fun transactionsReference(groupId: String) =
+//        groups.document(groupId).collection("transactions")
+//
+//
+    fun transactionsReference(groupId: GroupReference) =
+        db.document(groupId).collection("transactions")
+
+
 
     fun transactionsReference(groupRef: DocumentReference) =
         groupRef.collection("transactions")
@@ -41,13 +47,14 @@ object TransactionHandler {
     var storage: HashMap<GroupReference, TransactionStorage> = hashMapOf()
 
     fun getInstance(groupRefPath: GroupReference): TransactionStorage {
-        if (storage.containsKey(groupRefPath)) {
-            return storage[groupRefPath]!!
+        return if (storage.containsKey(groupRefPath)) {
+            storage[groupRefPath]!!
         } else {
             storage[groupRefPath] = TransactionStorage(groupRefPath)
-            return storage[groupRefPath]!!
+            storage[groupRefPath]!!
         }
     }
+
 
     fun getTransactionsRefPair(
         groupRefPath: GroupReference,
