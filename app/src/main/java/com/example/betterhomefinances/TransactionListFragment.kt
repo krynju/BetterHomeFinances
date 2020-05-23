@@ -10,14 +10,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.dummy.DummyContent.DummyItem
 import com.example.betterhomefinances.handlers.GroupReference
 import com.example.betterhomefinances.handlers.TransactionHandler
+import com.example.betterhomefinances.handlers.TransactionItem
 
 interface OnTransactionListFragmentInteractionListener {
 
     // TODO: Update argument type and name
-    fun onTransactionListFragmentInteraction(v: View, item: DummyItem?)
+    fun onTransactionListFragmentInteraction(v: View, item: TransactionItem)
 }
 
 class TransactionListFragment : Fragment(), OnTransactionListFragmentInteractionListener {
@@ -96,7 +96,7 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
             }
     }
 
-    override fun onTransactionListFragmentInteraction(v: View, item: DummyItem?) {
+    override fun onTransactionListFragmentInteraction(v: View, item: TransactionItem) {
         val action =
             TransactionListFragmentDirections.actionTransactionsFragmentToTransactionDetails(
                 transactionReferencePath

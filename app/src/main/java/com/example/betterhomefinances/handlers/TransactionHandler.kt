@@ -13,13 +13,13 @@ import kotlin.math.abs
 typealias TransactionReference = String
 
 data class Transaction(
-    val value: Double = 0.0,
-    val lender: UserReference? = null,
+    var value: Double = 0.0,
+    var lender: UserReference? = null,
     val timestamp: Timestamp? = null,
-    val borrowers: HashMap<UserReference, Double> = hashMapOf(),
-    val title: String = "",
-    val description: String = "",
-    val category: String = ""
+    var borrowers: HashMap<UserReference, Double> = hashMapOf(),
+    var title: String = "",
+    var description: String = "",
+    var category: String = ""
 )
 
 data class TransactionItem(
@@ -37,7 +37,6 @@ object TransactionHandler {
 //
     fun transactionsReference(groupId: GroupReference) =
         db.document(groupId).collection("transactions")
-
 
 
     fun transactionsReference(groupRef: DocumentReference) =
@@ -73,73 +72,162 @@ object TransactionHandler {
 
 
     fun createTransaction(
-        groupReference: String,
-        lender: String,
+        groupReference: GroupReference,
+        lender: UserReference,
         title: String,
         value: Double,
         category: String,
         description: String,
-        borrowers: HashMap<String, Double>
+        borrowers: HashMap<UserReference, Double>
     ) {
-        db.runTransaction { transaction ->
+        db.runTransaction { dbTransaction ->
             val groupRef = ref(groupReference)
-            val group = transaction.get(groupRef).toObject<Group>()!!
-
-            val b = group.balance.balances
-            val p = ArrayList<Payback>()
+            val group = dbTransaction.get(groupRef).toObject<Group>()!!
 
 
-            if (b.containsKey(lender)) {
-                b[lender] = value + b[lender]!!
-            } else {
-                b[lender] = value
-            }
-
-            for (borrower in borrowers.keys) {
-                if (b.containsKey(borrower)) {
-                    b[borrower] = b[borrower]!! - borrowers[borrower]!!
-                } else {
-                    b[borrower] = -borrowers[borrower]!!
-                }
-            }
-
-            val bb = b.toMutableMap()
-            val positiveKeys =
-                bb.filterValues { it >= 0.01 }.toList().sortedByDescending { it.second }
-                    .map { it.first }
-            val negativeKeys =
-                bb.filterValues { it <= -0.01 }.toList().sortedBy { it.second }.map { it.first }
-
-            for (pKey in positiveKeys) {
-                for (nKey in negativeKeys) {
-                    val pos = bb[pKey]!!
-                    val neg = bb[nKey]!!
-                    if (abs(neg) >= 0.01) {
-                        if (pos >= abs(neg)) {
-                            bb[pKey] = pos + neg
-                            bb[nKey] = 0.0
-                            p.add(Payback(nKey, pKey, abs(neg)))
-                        } else {
-                            bb[nKey] = neg + pos
-                            bb[pKey] = 0.0
-                            p.add(Payback(nKey, pKey, pos))
-                        }
-                    }
-                }
-            }
-            group.balance.paybacks = p
+            group.balance.balances =
+                generateBalances(group.balance.balances, lender, borrowers, value)
+            group.balance.paybacks = generatePaybackList(group.balance.balances)
             group.balance.timestamp = Timestamp.now()
-            group.balance.balances = b
 
-            transaction.set(groupRef, group)
+            dbTransaction.set(groupRef, group)
 
-            transaction.set(
+            dbTransaction.set(
                 transactionsReference(groupRef).document(),
                 Transaction(value, lender, Timestamp.now(), borrowers, title, description, category)
             )
             null
         }.addOnSuccessListener { Log.d(TAG, "transaction done") }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
+    }
+
+
+    fun editTransaction(
+        transactionReferencePath: TransactionReference,
+        groupReference: GroupReference,
+        lender: UserReference,
+        title: String,
+        value: Double,
+        category: String,
+        description: String,
+        borrowers: HashMap<UserReference, Double>
+    ) {
+        db.runTransaction { dbTransaction ->
+            val transactionReference = ref(transactionReferencePath)
+            val transaction = dbTransaction.get(transactionReference).toObject<Transaction>()!!
+
+            val groupRef = ref(groupReference)
+            val group = dbTransaction.get(groupRef).toObject<Group>()!!
+
+            group.balance.balances = generateBalances(
+                group.balance.balances,
+                transaction.lender!!,
+                reverseBorrowers(transaction.borrowers),
+                -transaction.value
+            )
+            group.balance.balances =
+                generateBalances(group.balance.balances, lender, borrowers, value)
+            group.balance.paybacks = generatePaybackList(group.balance.balances)
+
+            transaction.title = title
+            transaction.category = category
+            transaction.lender = lender
+            transaction.description = description
+            transaction.value = value
+            transaction.borrowers = borrowers
+
+            dbTransaction.set(groupRef, group)
+            dbTransaction.set(transactionReference, transaction)
+            null
+        }.addOnSuccessListener { Log.d(TAG, "transaction done") }
+            .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
+
+    }
+
+    fun deleteTransaction(
+        transactionReferencePath: TransactionReference,
+        groupReference: GroupReference
+    ) {
+        db.runTransaction { dbTransaction ->
+            val transactionReference = ref(transactionReferencePath)
+            val transaction = dbTransaction.get(transactionReference).toObject<Transaction>()!!
+
+            val groupRef = ref(groupReference)
+            val group = dbTransaction.get(groupRef).toObject<Group>()!!
+
+            group.balance.balances = generateBalances(
+                group.balance.balances,
+                transaction.lender!!,
+                reverseBorrowers(transaction.borrowers),
+                -transaction.value
+            )
+            group.balance.paybacks = generatePaybackList(group.balance.balances)
+
+            dbTransaction.set(groupRef, group)
+            dbTransaction.delete(transactionReference)
+            null
+        }.addOnSuccessListener { Log.d(TAG, "transaction done") }
+            .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
+    }
+
+    private fun reverseBorrowers(b: HashMap<UserReference, Double>): HashMap<UserReference, Double> {
+        for (el in b) {
+            el.setValue(-el.value)
+        }
+        return b
+    }
+
+    private fun generatePaybackList(b: HashMap<UserReference, Double>): ArrayList<Payback> {
+        val p = ArrayList<Payback>()
+
+        val bb = b.toMutableMap()
+        val positiveKeys =
+            bb.filterValues { it >= 0.01 }.toList().sortedByDescending { it.second }
+                .map { it.first }
+        val negativeKeys =
+            bb.filterValues { it <= -0.01 }.toList().sortedBy { it.second }.map { it.first }
+
+        for (pKey in positiveKeys) {
+            for (nKey in negativeKeys) {
+                val pos = bb[pKey]!!
+                val neg = bb[nKey]!!
+                if (abs(neg) >= 0.01) {
+                    if (pos >= abs(neg)) {
+                        bb[pKey] = pos + neg
+                        bb[nKey] = 0.0
+                        p.add(Payback(nKey, pKey, abs(neg)))
+                    } else {
+                        bb[nKey] = neg + pos
+                        bb[pKey] = 0.0
+                        p.add(Payback(nKey, pKey, pos))
+                    }
+                }
+            }
+        }
+        return p
+    }
+
+
+    fun generateBalances(
+        balances: HashMap<UserReference, Double>,
+        lender: UserReference,
+        borrowers: HashMap<UserReference, Double>,
+        value: Double
+    ): HashMap<UserReference, Double> {
+        if (balances.containsKey(lender)) {
+            balances[lender] = value + balances[lender]!!
+        } else {
+            balances[lender] = value
+        }
+
+        for (borrower in borrowers.keys) {
+            if (balances.containsKey(borrower)) {
+                balances[borrower] = balances[borrower]!! - borrowers[borrower]!!
+            } else {
+                balances[borrower] = -borrowers[borrower]!!
+            }
+        }
+        return balances
     }
 
 }
