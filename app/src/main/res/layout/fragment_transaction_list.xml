@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tsuryo.swipeablerv.SwipeableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
@@ -10,4 +10,12 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".TransactionListFragment"
+    app:leftBgColor="@color/colorAccent"
+
+    app:leftText="Delete"
+    app:rightBgColor="@color/blue"
+    app:rightText="Read"
+    app:textColor="@android:color/white"
+    app:textSize="20sp"
     tools:listitem="@layout/fragment_transaction_list" />
+

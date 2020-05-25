@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_nav_groups_to_createGroup"
             app:destination="@id/nav_createGroup" />
+        <action
+            android:id="@+id/action_nav_groups_to_nav_createTransaction"
+            app:destination="@id/nav_createTransaction" />
     </fragment>
 
     <fragment
@@ -59,6 +62,9 @@
             android:id="@+id/action_transactionsFragment_to_transactionDetails"
             app:destination="@id/nav_transactionDetails" />
         <argument android:name="groupReferencePath" />
+        <action
+            android:id="@+id/action_nav_transactionListFragment_to_nav_createTransaction"
+            app:destination="@id/nav_createTransaction" />
     </fragment>
     <fragment
         android:id="@+id/nav_transactionDetails"
@@ -66,6 +72,9 @@
         android:label="fragment_transaction_details"
         tools:layout="@layout/fragment_transaction_details">
         <argument android:name="transactionReferencePath" />
+        <action
+            android:id="@+id/action_nav_transactionDetails_to_nav_createTransaction"
+            app:destination="@id/nav_createTransaction" />
     </fragment>
     <fragment
         android:id="@+id/nav_createGroup"
@@ -78,5 +87,9 @@
         android:label="fragment_create_transaction"
         tools:layout="@layout/fragment_create_transaction">
         <argument android:name="groupReferencePath" />
+        <argument
+            android:name="transactionReferencePath"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

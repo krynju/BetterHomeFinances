@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.betterhomefinances.databinding.FragmentGroupListBinding
 import com.example.betterhomefinances.handlers.GroupHandler
+import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 
 /**
  * A fragment representing a list of Items.
@@ -19,22 +21,25 @@ import com.example.betterhomefinances.handlers.GroupHandler
  */
 
 interface OnGroupListFragmentInteractionListener {
+
+
     fun onGroupListFragmentInteraction(v: View, item: String?)
 }
 
-class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener {
+class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
+    SwipeLeftRightCallback.Listener {
     private val TAG = "ItemFragment.kt"
     // TODO: Customize parameters
     private var columnCount = 1
+    private var navController: NavController? = null
+    private var _binding: FragmentGroupListBinding? = null
+    private val binding get() = _binding!!
 
     private var listener: OnGroupListFragmentInteractionListener = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
     }
 
 
@@ -42,18 +47,14 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_group_list, container, false)
+        _binding = FragmentGroupListBinding.inflate(inflater, container, false)
 
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
-            }
-        }
-        return view
+        binding.list.layoutManager = LinearLayoutManager(context)
+        binding.list.adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
+        binding.list.setListener(this)
+
+        navController = findNavController()
+        return binding.root
     }
 
     override fun onAttach(context: Context) {
@@ -65,25 +66,20 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener {
     }
 
 
-
-
-    companion object {
-
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            GroupListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
-    }
-
     override fun onGroupListFragmentInteraction(v: View, item: String?) {
         val action = GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
         v.findNavController().navigate(action)
+    }
+
+    override fun onSwipedRight(position: Int) {
+        val action = GroupListFragmentDirections.actionNavGroupsToNavCreateTransaction(
+            GroupHandler.data[position].reference,
+            null
+        )
+        navController?.navigate(action)
+    }
+
+    override fun onSwipedLeft(position: Int) {
+        TODO("Not yet implemented")
     }
 }

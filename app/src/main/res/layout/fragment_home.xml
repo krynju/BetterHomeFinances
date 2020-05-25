@@ -42,12 +42,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.tsuryo.swipeablerv.SwipeableRecyclerView
         android:id="@+id/recyclerView"
+
         android:layout_width="398dp"
         android:layout_height="334dp"
+        app:leftBgColor="@color/colorAccent"
+        app:leftText="Delete"
+        app:rightBgColor="@color/blue"
+        app:rightText="Read"
+        app:textColor="@android:color/white"
+        app:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/fragment_group_item" />
+
+    <!--    <com.tsuryo.swipeablerv.SwipeableRecyclerView-->
+    <!--        android:id="@+id/rv"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:leftBgColor="@color/colorAccent"-->
+    <!--        app:leftImage="@drawable/ic_remove"-->
+    <!--        app:leftText="Delete"-->
+    <!--        app:rightBgColor="@color/blue"-->
+    <!--        app:rightImage="@drawable/ic_check"-->
+    <!--        app:rightText="Read"-->
+    <!--        app:textColor="@android:color/white"-->
+    <!--        app:textSize="20sp" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

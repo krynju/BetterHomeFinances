@@ -40,7 +40,7 @@ class GroupDetailsFragment : Fragment() {
 
     fun createTransactionButton(v: View) {
         val action = GroupDetailsFragmentDirections.actionNavGroupDetailsToCreateTransaction(
-            groupReferencePath!!
+            groupReferencePath!!, null
         )
         v.findNavController().navigate(action)
     }
