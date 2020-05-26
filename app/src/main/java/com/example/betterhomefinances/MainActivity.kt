@@ -15,9 +15,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
 import com.firebase.ui.auth.AuthUI
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
@@ -32,30 +30,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val toolbar: Toolbar = binding.root.toolbar
         setSupportActionBar(toolbar)
-
-        val fab: FloatingActionButton = binding.root.fab
-        fab.setOnClickListener { view ->
-//            GroupHandler.createGroup()
-//            val b = hashMapOf(
-//                currentUserReference.path to 5.0,
-//                "users/uNMjYrRUfhDiGUboqD79" to 5.0,
-//                "users/kVDZCSrD4UueSOq8bCzk" to 7.5
-//            )
-//
-//            TransactionHandler.createTransaction(
-//                groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
-//                borrowers = b,
-//                title = "TEST TRANSACTION",
-//                category = "TEST CATEGORY",
-//                description = "yeet",
-//                lender = "users/kVDZCSrD4UueSOq8bCzk",
-//                value = 17.5
-//            )
-
-
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
 
         val drawerLayout: DrawerLayout = binding.root.drawer_layout
         val navView: NavigationView = binding.navView
@@ -76,7 +50,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
@@ -88,9 +61,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_signout -> {
                 AuthUI.getInstance()

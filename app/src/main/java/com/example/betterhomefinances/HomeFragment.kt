@@ -34,7 +34,7 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         UserHandler.userDetails(
             fun(u: UserDetails) {
                 temptext = u
-                binding.textHome.text = temptext?.settings?.tempstuff!!
+//                binding.textHome.text = temptext?.settings?.tempstuff!!
             },
             fun() {
                 UserHandler.initiateUserDetails()
@@ -45,7 +45,7 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         binding.recyclerView.setListener(this)
 
         binding.textView2.text = UserHandler.userName;
-        binding.textView3.text = UserHandler.userId;
+//        binding.textView3.text = UserHandler.userId;
 
         navController = findNavController()
         return binding.root

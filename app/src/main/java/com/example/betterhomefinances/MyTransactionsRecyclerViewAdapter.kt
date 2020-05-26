@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.dummy.DummyContent.DummyItem
 import com.example.betterhomefinances.handlers.TransactionItem
 import com.example.betterhomefinances.handlers.TransactionStorage
 import kotlinx.android.synthetic.main.fragment_transaction_item.view.*
