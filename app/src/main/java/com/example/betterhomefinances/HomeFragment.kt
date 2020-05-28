@@ -1,13 +1,12 @@
 package com.example.betterhomefinances
 
-import android.R
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import android.widget.TextView
+import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -15,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.betterhomefinances.databinding.FragmentHomeBinding
 import com.example.betterhomefinances.handlers.GroupHandler
+import com.example.betterhomefinances.handlers.GroupItem
 import com.example.betterhomefinances.handlers.UserDetails
 import com.example.betterhomefinances.handlers.UserHandler
 import com.github.mikephil.charting.animation.Easing
@@ -36,14 +36,11 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
     private var temptext: UserDetails? = null;
     private var listener = this
     private var navController: NavController? = null;
+    private lateinit var mOnListChangedCallback: ObservableList.OnListChangedCallback<ObservableList<GroupItem>>
 
     private var _chart: PieChart? = null
     private val chart get() = _chart!!
 
-    private var seekBarX: SeekBar? = null
-    private var seekBarY: SeekBar? = null
-    private var tvX: TextView? = null
-    private var tvY: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,8 +63,17 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         binding.recyclerView.setListener(this)
         navController = findNavController()
 
+        mOnListChangedCallback = MyOnGroupListChangedCallback(this)
 
-//        tvX = findViewById(R.id.tvXMax)
+        GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
+
+        doplot()
+
+        return binding.root
+    }
+
+    fun doplot() {
+        //        tvX = findViewById(R.id.tvXMax)
 //        tvY = findViewById(R.id.tvYMax)
 
 //        seekBarX = findViewById(R.id.seekBar1)
@@ -78,31 +84,32 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
         _chart = binding.piechart
 
-        chart.setUsePercentValues(true)
-        chart.getDescription().setEnabled(false)
+        chart.setUsePercentValues(false)
+        chart.description.isEnabled = false
         chart.setExtraOffsets(5.0F, 10.0F, 5.0F, 5.0F)
 
-        chart.setDragDecelerationFrictionCoef(0.95f)
+        chart.dragDecelerationFrictionCoef = 0.95f
 
 //        chart.setCenterTextTypeface(tfLight)
 //        chart.setCenterText(generateCenterSpannableText())
 
-        chart.setDrawHoleEnabled(true)
+        chart.isDrawHoleEnabled = true
         chart.setHoleColor(Color.WHITE)
 
         chart.setTransparentCircleColor(Color.WHITE)
         chart.setTransparentCircleAlpha(110)
 
-        chart.setHoleRadius(58f)
-        chart.setTransparentCircleRadius(61f)
+        chart.holeRadius = 58f
+        chart.transparentCircleRadius = 61f
 
         chart.setDrawCenterText(true)
 
-        chart.setRotationAngle(0F)
+
+        chart.rotationAngle = 0F
         // enable rotation of the chart by touch
         // enable rotation of the chart by touch
-        chart.setRotationEnabled(true)
-        chart.setHighlightPerTapEnabled(true)
+        chart.isRotationEnabled = true
+        chart.isHighlightPerTapEnabled = true
 
         // chart.setUnit(" €");
         // chart.setDrawUnitsInChart(true);
@@ -122,57 +129,58 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         // chart.spin(2000, 0, 360);
 
         // chart.spin(2000, 0, 360);
-        val l: Legend = chart.getLegend()
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP)
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT)
-        l.setOrientation(Legend.LegendOrientation.VERTICAL)
+        val l: Legend = chart.legend
+        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        l.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        l.orientation = Legend.LegendOrientation.VERTICAL
         l.setDrawInside(false)
-        l.setXEntrySpace(7f)
-        l.setYEntrySpace(0f)
-        l.setYOffset(0f)
+        l.xEntrySpace = 7f
+        l.yEntrySpace = 0f
+        l.yOffset = 0f
 
         // entry label styling
 
         // entry label styling
-        chart.setEntryLabelColor(Color.WHITE)
-//        chart.setEntryLabelTypeface(tfRegular)
+        chart.setEntryLabelColor(Color.BLACK)
+        chart.setEntryLabelTypeface(Typeface.DEFAULT)
         chart.setEntryLabelTextSize(12f)
+        addDataToPlot()
+    }
+
+
+    fun addDataToPlot() {
         val entries: ArrayList<PieEntry> = ArrayList()
 
-        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
-        // the chart.
 
-        // NOTE: The order of the entries when being added to the entries array determines their position around the center of
-        // the chart.
-        var count = 2
-        var range = 2.0
-        for (i in 0 until count) {
+        for (groupItem in GroupHandler.data) {
             entries.add(
                 PieEntry(
-                    (Math.random() * range + range / 5).toFloat(),
-                    "yeet",
-                    resources.getDrawable(R.drawable.divider_horizontal_dark)
+                    groupItem.group.balance.balances[UserHandler.currentUserReference.path]!!.toFloat(),
+                    groupItem.group.name
                 )
             )
         }
 
+
         val dataSet = PieDataSet(entries, "Election Results")
 
         dataSet.setDrawIcons(false)
-
+        dataSet.color = resources.getColor(R.color.secondaryGreen)
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
+        dataSet.setValueTextColor(Color.BLACK)
 
         val data = PieData(dataSet)
         data.setValueFormatter(PercentFormatter(chart))
+//        data.setValueFormatter(MyValueFormatter(chart))
         data.setValueTextSize(11f)
-        data.setValueTextColor(Color.WHITE)
+
+        data.setValueTextColor(Color.BLACK)
 //        data.setValueTypeface(tfLight)
         chart.data = data
-
-        return binding.root
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -196,4 +204,58 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         TODO("Not yet implemented")
     }
 }
+
+private class MyOnGroupListChangedCallback(myGroupItemRecyclerViewAdapter: HomeFragment) :
+    ObservableList.OnListChangedCallback<ObservableList<GroupItem>>(
+    ) {
+    var MTEST: HomeFragment = myGroupItemRecyclerViewAdapter
+    override fun onChanged(sender: ObservableList<GroupItem>?) {
+//        TODO("Not yet implemented")
+        MTEST.addDataToPlot()
+    }
+
+    override fun onItemRangeRemoved(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.addDataToPlot()
+
+    }
+
+    override fun onItemRangeMoved(
+        sender: ObservableList<GroupItem>?,
+        fromPosition: Int,
+        toPosition: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.addDataToPlot()
+
+    }
+
+    override fun onItemRangeInserted(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.addDataToPlot()
+
+    }
+
+    override fun onItemRangeChanged(
+        sender: ObservableList<GroupItem>?,
+        positionStart: Int,
+        itemCount: Int
+    ) {
+//        TODO("Not yet implemented")
+        MTEST.addDataToPlot()
+
+    }
+
+}
+
+
 
