@@ -1,6 +1,7 @@
 package com.example.betterhomefinances
 
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,9 @@ import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
+import com.example.betterhomefinances.handlers.UserHandler
 import kotlinx.android.synthetic.main.fragment_group_item.view.*
-
+import kotlin.math.round
 /**
  * [RecyclerView.Adapter] that can display a [GroupItemDUMMYTOREMOVE] and makes a call to the
  * specified [OnGroupListFragmentInteractionListener].
@@ -49,9 +51,22 @@ class MyGroupItemRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = contentHandler.data[position]
-        holder.mIdView.text = item.group.name
-        holder.mContentView.text = item.group.name
+        holder.mGroupNameView.text = item.group.name
 
+        val balance = item.group.balance.balances[UserHandler.currentUserReference.path]!!
+        val rounded = (round(balance * 100) / 100)
+        val prefix = if (rounded > 0) {
+            "+"
+        } else {
+            "-"
+        }
+        holder.mBalanceView.text = prefix + rounded.toString()
+        if (rounded > 0) {
+            holder.mBalanceView.setTextColor(Color.GREEN)
+        } else {
+            holder.mBalanceView.setTextColor(Color.RED)
+        }
+        holder.mDescriptionView.text = item.group.name
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -61,12 +76,13 @@ class MyGroupItemRecyclerViewAdapter(
     override fun getItemCount(): Int = contentHandler.data.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
+        val mGroupNameView: TextView = mView.text_group_name
+        val mBalanceView: TextView = mView.text_balance
+        val mDescriptionView: TextView = mView.text_description
 
 
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + mGroupNameView.text + "'"
         }
     }
 }

@@ -144,7 +144,7 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
-        var count = 10
+        var count = 2
         var range = 2.0
         for (i in 0 until count) {
             entries.add(
