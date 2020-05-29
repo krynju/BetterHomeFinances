@@ -29,7 +29,7 @@ object GroupHandler {
 
 
     init {
-        UserHandler.currentUserReference.addSnapshotListener { snapshot, e ->
+        UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
             print(snapshot)
             val ud = snapshot?.toObject<UserDetails>()!!
             val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
@@ -61,13 +61,13 @@ object GroupHandler {
             .add(
                 Group(
                     name,
-                    arrayListOf(UserHandler.currentUserReference.path),
+                    arrayListOf(UserHandler.currentUserDocumentReference.path),
                     Balance(HashMap(), ArrayList(), Timestamp.now()),
                     description
                 )
             )
             .addOnSuccessListener { documentReference ->
-                UserHandler.currentUserReference.update(
+                UserHandler.currentUserDocumentReference.update(
                     "memberOfGroups",
                     FieldValue.arrayUnion(documentReference.path)
                 )
@@ -91,7 +91,7 @@ object GroupHandler {
     }
 
     private fun getGroupsRefPair(groupIds: List<String>, callback: (List<GroupItem>) -> Unit) {
-        UserHandler.getUserDetails(UserHandler.currentUserReference, {
+        UserHandler.getUserDetails(UserHandler.currentUserDocumentReference, {
             FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
                 .get()
                 .addOnSuccessListener { result ->

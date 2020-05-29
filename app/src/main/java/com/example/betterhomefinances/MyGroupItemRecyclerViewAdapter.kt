@@ -30,16 +30,10 @@ class MyGroupItemRecyclerViewAdapter(
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as GroupItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
             mListener.onGroupListFragmentInteraction(v, item.reference)
         }
-
         mOnListChangedCallback = MyOnListChangedCallback(this)
-
         contentHandler.data.addOnListChangedCallback(mOnListChangedCallback)
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,8 +46,8 @@ class MyGroupItemRecyclerViewAdapter(
         val item = contentHandler.data[position]
         holder.mGroupNameView.text = item.group.name
         var balance = 0.0
-        if (item.group.balance.balances.containsKey(UserHandler.currentUserReference.path)) {
-            balance = item.group.balance.balances[UserHandler.currentUserReference.path]!!
+        if (item.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path)) {
+            balance = item.group.balance.balances[UserHandler.currentUserDocumentReference.path]!!
         }
         val rounded = (round(balance * 100) / 100)
         var prefix = ""

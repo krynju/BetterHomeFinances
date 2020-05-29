@@ -12,12 +12,19 @@ import com.google.firebase.firestore.ktx.toObject
 typealias UserReference = String
 
 data class UserDetails(
+    var name: String? = null,
     var settings: UserSettings? = UserSettings(),
     var memberOfGroups: ArrayList<GroupReference> = ArrayList()
 )
 
 data class UserSettings(
     var tempstuff: String? = null
+)
+
+data class UserItem(
+    var reference: UserReference? = null,
+    var user: UserDetails? = null
+
 )
 
 object UserHandler {
@@ -29,15 +36,17 @@ object UserHandler {
     private val userId: String? get() = currentUser?.uid
 
     init {
-        getUserDetails(currentUserReference, {
-            userDetails[currentUserReference.path] = it
+        getUserDetails(currentUserDocumentReference, {
+            userDetails[currentUserDocumentReference.path] = it
         }, {})
     }
 
+//    val users get()= FirestoreHandler.db.collection("")
 
+    val currentUserReference: UserReference get() = currentUserDocumentReference.path
     var userDetails: ObservableMap<UserReference, UserDetails> = ObservableArrayMap()
 
-    val currentUserReference: DocumentReference get() = users.document(userId.toString())
+    val currentUserDocumentReference: DocumentReference get() = users.document(userId.toString())
 
 
     fun getUserDetails(
@@ -54,6 +63,7 @@ object UserHandler {
 
     fun initiateUserDetails(callback: () -> Unit) {
         val data = UserDetails(
+            userName,
             UserSettings("tempstuff"),
             ArrayList<String>()
         )

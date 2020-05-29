@@ -61,8 +61,5 @@ class CreateGroup : Fragment() {
             print(it)
             findNavController().navigateUp()
         }
-
-
-
     }
 }

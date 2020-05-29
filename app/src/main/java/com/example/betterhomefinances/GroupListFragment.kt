@@ -14,11 +14,6 @@ import com.example.betterhomefinances.databinding.FragmentGroupListBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [GroupListFragment.OnListFragmentInteractionListener] interface.
- */
 
 interface OnGroupListFragmentInteractionListener {
 
@@ -29,8 +24,7 @@ interface OnGroupListFragmentInteractionListener {
 class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
     SwipeLeftRightCallback.Listener {
     private val TAG = "ItemFragment.kt"
-    // TODO: Customize parameters
-    private var columnCount = 1
+
     private var navController: NavController? = null
     private var _binding: FragmentGroupListBinding? = null
     private val binding get() = _binding!!
@@ -39,9 +33,7 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

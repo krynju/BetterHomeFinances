@@ -143,10 +143,10 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         val entries: ArrayList<PieEntry> = ArrayList()
 
         for (groupItem in GroupHandler.data) {
-            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserReference.path)) {
+            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path)) {
                 entries.add(
                     PieEntry(
-                        groupItem.group.balance.balances[UserHandler.currentUserReference.path]!!.toFloat(),
+                        groupItem.group.balance.balances[UserHandler.currentUserDocumentReference.path]!!.toFloat(),
                         groupItem.group.name
                     )
                 )

@@ -5,6 +5,7 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.example.betterhomefinances.handlers.FirestoreHandler.ref
+import com.example.betterhomefinances.handlers.UserHandler.currentUserReference
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.toObject
@@ -14,6 +15,7 @@ typealias TransactionReference = String
 
 data class Transaction(
     var value: Double = 0.0,
+    var creator: UserReference? = null,
     var lender: UserReference? = null,
     val timestamp: Timestamp? = null,
     var borrowers: HashMap<UserReference, Double> = hashMapOf(),
@@ -94,7 +96,16 @@ object TransactionHandler {
 
             dbTransaction.set(
                 transactionsReference(groupRef).document(),
-                Transaction(value, lender, Timestamp.now(), borrowers, title, description, category)
+                Transaction(
+                    value,
+                    lender,
+                    currentUserReference,
+                    Timestamp.now(),
+                    borrowers,
+                    title,
+                    description,
+                    category
+                )
             )
             null
         }.addOnSuccessListener { Log.d(TAG, "transaction done") }

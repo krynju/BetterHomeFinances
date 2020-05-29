@@ -5,25 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.betterhomefinances.databinding.FragmentCreateTransactionBinding
-import com.example.betterhomefinances.handlers.TransactionHandler
-import com.example.betterhomefinances.handlers.UserHandler
+import com.example.betterhomefinances.handlers.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CreateTransaction.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CreateTransaction : Fragment() {
-    // TODO: Rename and change types of parameters
+interface OnUserListFragmentInteractionListener {
 
-    private var transactionName = "transaction_Name"
 
+    fun onUserListFragmentInteraction(v: View, item: UserItem)
+}
+
+class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
     private var _binding: FragmentCreateTransactionBinding? = null
     private val binding get() = _binding!!
     var groupReferencePath: String? = null
@@ -32,8 +25,9 @@ class CreateTransaction : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        groupReferencePath = arguments?.get("groupReferencePath") as String?
-        transactionReferencePath = arguments?.get("transactionReferencePath") as String?
+        groupReferencePath = arguments?.get("groupReferencePath") as GroupReference?
+        transactionReferencePath =
+            arguments?.get("transactionReferencePath") as TransactionReference?
         if (transactionReferencePath != null) {
             mode = "edit"
         }
@@ -45,14 +39,18 @@ class CreateTransaction : Fragment() {
     ): View? {
         _binding = FragmentCreateTransactionBinding.inflate(inflater, container, false)
         binding.addButton.setOnClickListener { createTransaction(it) }
+
+        binding.list.layoutManager = LinearLayoutManager(context)
+        binding.list.adapter = MyUsersRecyclerViewAdapter(groupReferencePath!!)
+
         return binding.root
     }
 
     fun createTransaction(v: View) {
-        val tran_value = binding.editText3.text.toString().toDoubleOrNull() ?: return
+        val tran_value = binding.transactionValue.text.toString().toDoubleOrNull() ?: return
 
         val b = hashMapOf(
-            UserHandler.currentUserReference.path to tran_value / 3.0,
+            UserHandler.currentUserDocumentReference.path to tran_value / 3.0,
             "users/uNMjYrRUfhDiGUboqD79" to tran_value / 3.0,
             "users/kVDZCSrD4UueSOq8bCzk" to tran_value / 3.0
         )
@@ -60,11 +58,15 @@ class CreateTransaction : Fragment() {
         TransactionHandler.createTransaction(
             groupReference = groupReferencePath!!,
             borrowers = b,
-            title = binding.editText.text.toString(),
+            title = binding.transactionTitle.text.toString(),
             category = "TEST CATEGORY",
             description = "yeet",
             lender = "users/kVDZCSrD4UueSOq8bCzk",
             value = tran_value / 3.0
         )
+    }
+
+    override fun onUserListFragmentInteraction(v: View, item: UserItem) {
+        TODO("Not yet implemented")
     }
 }
