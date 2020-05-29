@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.betterhomefinances.databinding.FragmentCreateGroupBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 
@@ -27,20 +28,21 @@ class CreateGroup : Fragment() {
     }
 
     fun onClickCreateGroup(v: View) {
+
         val name = binding.groupname.text!!
         val desc = binding.descriptionname.text!!
 
 
-        if (name.length == 0 && desc.length == 0) {
+        if (name.isEmpty() && desc.isEmpty()) {
             binding.outlinedTextField.error = "Please input the name"
             binding.outlinedTextField2.error = "Please input the description"
             return
         }
-        if (name.length == 0) {
+        if (name.isEmpty()) {
             binding.outlinedTextField.error = "Please input the name"
             return
         }
-        if (desc.length == 0) {
+        if (desc.isEmpty()) {
             binding.outlinedTextField2.error = "Please input the description"
             return
         }
@@ -51,8 +53,14 @@ class CreateGroup : Fragment() {
             return
         }
 
-        GroupHandler.createGroup(name.toString(), desc.toString()) { print(it) }
+        binding.button3.isEnabled = false
+        binding.outlinedTextField.isEnabled = false
+        binding.outlinedTextField2.isEnabled = false
 
+        GroupHandler.createGroup(name.toString(), desc.toString()) {
+            print(it)
+            findNavController().navigateUp()
+        }
 
 
 

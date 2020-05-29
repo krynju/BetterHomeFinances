@@ -5,6 +5,7 @@ import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.toObject
 
@@ -26,9 +27,24 @@ object GroupHandler {
 
     var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
 
+
     init {
-        getGroupsRefPair {
-            data.addAll(it)
+        UserHandler.currentUserReference.addSnapshotListener { snapshot, e ->
+            print(snapshot)
+            val ud = snapshot?.toObject<UserDetails>()!!
+            val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
+            val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
+
+
+            if (currentIds.union(fetchedIds).size > currentIds.size) {
+                getGroupsRefPair(fetchedIds.subtract(currentIds).toList()) {
+                    data.addAll(it)
+                }
+            } else if (fetchedIds.size < currentIds.size) {
+                val el = currentIds.subtract(fetchedIds)
+                val toRemove = data.filter { it.reference.split("/")[1] in el }
+                data.removeAll(toRemove)
+            }
         }
     }
 
@@ -66,7 +82,7 @@ object GroupHandler {
                 transaction.update(
                     db.document(userRef),
                     "memberOfGroups",
-                    FieldValue.arrayRemove(ref)
+                    FieldValue.arrayRemove(ref.path)
                 )
             }
 //            transaction.delete(ref)
@@ -74,15 +90,20 @@ object GroupHandler {
         }
     }
 
-    private fun getGroupsRefPair(callback: (List<GroupItem>) -> Unit) {
-        FirestoreHandler.groups.get()
-            .addOnSuccessListener { result ->
-                callback(result.map {
-                    GroupItem(
-                        it.reference.path,
-                        it.toObject<Group>()
-                    )
-                })
-            }
+    private fun getGroupsRefPair(groupIds: List<String>, callback: (List<GroupItem>) -> Unit) {
+        UserHandler.getUserDetails(UserHandler.currentUserReference, {
+            FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
+                .get()
+                .addOnSuccessListener { result ->
+                    callback(result.map {
+                        GroupItem(
+                            it.reference.path,
+                            it.toObject<Group>()
+                        )
+                    })
+                }
+        }, {})
+
+
     }
 }

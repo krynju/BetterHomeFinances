@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.betterhomefinances.databinding.FragmentCreateTransactionBinding
-import com.example.betterhomefinances.handlers.FirestoreHandler
 import com.example.betterhomefinances.handlers.TransactionHandler
 import com.example.betterhomefinances.handlers.UserHandler
 
@@ -27,22 +26,25 @@ class CreateTransaction : Fragment() {
 
     private var _binding: FragmentCreateTransactionBinding? = null
     private val binding get() = _binding!!
+    var groupReferencePath: String? = null
+    var transactionReferencePath: String? = null
+    private var mode: String = "create"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        groupReferencePath = arguments?.get("groupReferencePath") as String?
+        transactionReferencePath = arguments?.get("transactionReferencePath") as String?
+        if (transactionReferencePath != null) {
+            mode = "edit"
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentCreateTransactionBinding.inflate(inflater, container, false)
-
-
         binding.addButton.setOnClickListener { createTransaction(it) }
-
         return binding.root
     }
 
@@ -56,7 +58,7 @@ class CreateTransaction : Fragment() {
         )
 
         TransactionHandler.createTransaction(
-            groupReference = FirestoreHandler.groups.document("C7uKXUkRJ5osSgaOvIs5").path,
+            groupReference = groupReferencePath!!,
             borrowers = b,
             title = binding.editText.text.toString(),
             category = "TEST CATEGORY",
@@ -64,25 +66,5 @@ class CreateTransaction : Fragment() {
             lender = "users/kVDZCSrD4UueSOq8bCzk",
             value = tran_value / 3.0
         )
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CreateTransaction.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CreateTransaction().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

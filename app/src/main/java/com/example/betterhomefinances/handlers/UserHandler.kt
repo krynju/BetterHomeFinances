@@ -1,6 +1,8 @@
 package com.example.betterhomefinances.handlers
 
 import android.util.Log
+import androidx.databinding.ObservableArrayMap
+import androidx.databinding.ObservableMap
 import com.example.betterhomefinances.handlers.FirestoreHandler.users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -24,19 +26,33 @@ object UserHandler {
 
     val currentUser get() = auth.currentUser
     val userName: String? get() = currentUser?.displayName
-    val userId: String? get() = currentUser?.uid
+    private val userId: String? get() = currentUser?.uid
+
+    init {
+        getUserDetails(currentUserReference, {
+            userDetails[currentUserReference.path] = it
+        }, {})
+    }
+
+
+    var userDetails: ObservableMap<UserReference, UserDetails> = ObservableArrayMap()
 
     val currentUserReference: DocumentReference get() = users.document(userId.toString())
 
-    fun userDetails(callback: (UserDetails) -> Unit, failureCallback: () -> Unit) =
-        currentUserReference
-        .get()
+
+    fun getUserDetails(
+        userReference: DocumentReference,
+        callback: (UserDetails) -> Unit,
+        failureCallback: () -> Unit
+    ) =
+        userReference
+            .get()
             .addOnSuccessListener { result ->
                 result.toObject<UserDetails>()?.let { callback(it) }
             }
-        .addOnFailureListener { failureCallback() }
+            .addOnFailureListener { failureCallback() }
 
-    fun initiateUserDetails() {
+    fun initiateUserDetails(callback: () -> Unit) {
         val data = UserDetails(
             UserSettings("tempstuff"),
             ArrayList<String>()
@@ -47,6 +63,7 @@ object UserHandler {
             .set(data, SetOptions.merge()) // TODO: this overwrites the config
             .addOnSuccessListener {
                 Log.d(TAG, "Initiated userConfig record for $userId")
+                callback()
             }
     }
 

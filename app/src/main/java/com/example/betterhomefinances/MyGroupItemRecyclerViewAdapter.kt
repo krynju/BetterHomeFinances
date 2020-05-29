@@ -100,7 +100,6 @@ private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupIte
     ) {
     var MTEST: MyGroupItemRecyclerViewAdapter = myGroupItemRecyclerViewAdapter
     override fun onChanged(sender: ObservableList<GroupItem>?) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
     }
 
@@ -109,7 +108,6 @@ private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupIte
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
 
     }
@@ -120,7 +118,6 @@ private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupIte
         toPosition: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
 
     }
@@ -130,7 +127,6 @@ private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupIte
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
 
     }
@@ -140,9 +136,7 @@ private class MyOnListChangedCallback(myGroupItemRecyclerViewAdapter: MyGroupIte
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
-
     }
 
 }

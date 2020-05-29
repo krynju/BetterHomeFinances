@@ -63,8 +63,7 @@ class EntryActivity : AppCompatActivity() {
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-                UserHandler.initiateUserDetails()
-                successfulLogin()
+                UserHandler.initiateUserDetails { successfulLogin() }
             } else {
                 // Sign in failed
                 if (response == null) {

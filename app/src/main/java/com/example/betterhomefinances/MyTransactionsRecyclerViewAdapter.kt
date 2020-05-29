@@ -70,7 +70,6 @@ private class MyTransactionOnListChangedCallback(myTransactionsRecyclerViewAdapt
     ) {
     var MTEST: MyTransactionsRecyclerViewAdapter = myTransactionsRecyclerViewAdapter
     override fun onChanged(sender: ObservableList<TransactionItem>?) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
     }
 
@@ -79,9 +78,7 @@ private class MyTransactionOnListChangedCallback(myTransactionsRecyclerViewAdapt
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
-
     }
 
     override fun onItemRangeMoved(
@@ -90,9 +87,7 @@ private class MyTransactionOnListChangedCallback(myTransactionsRecyclerViewAdapt
         toPosition: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
-
     }
 
     override fun onItemRangeInserted(
@@ -100,9 +95,7 @@ private class MyTransactionOnListChangedCallback(myTransactionsRecyclerViewAdapt
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
-
     }
 
     override fun onItemRangeChanged(
@@ -110,9 +103,7 @@ private class MyTransactionOnListChangedCallback(myTransactionsRecyclerViewAdapt
         positionStart: Int,
         itemCount: Int
     ) {
-//        TODO("Not yet implemented")
         MTEST.notifyDataSetChanged()
-
     }
 
 }

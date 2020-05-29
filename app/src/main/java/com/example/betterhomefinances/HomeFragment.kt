@@ -49,15 +49,6 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        UserHandler.userDetails(
-            fun(u: UserDetails) {
-                temptext = u
-//                binding.textHome.text = temptext?.settings?.tempstuff!!
-            },
-            fun() {
-                UserHandler.initiateUserDetails()
-            }
-        )
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
         binding.recyclerView.setListener(this)
@@ -166,7 +157,8 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         val dataSet = PieDataSet(entries, "Election Results")
 
         dataSet.setDrawIcons(false)
-        dataSet.color = resources.getColor(R.color.secondaryGreen)
+
+        dataSet.color = Color.parseColor("#52d053")
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
