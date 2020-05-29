@@ -13,7 +13,8 @@ typealias GroupReference = String
 data class Group(
     val name: String? = null,
     val members: ArrayList<UserReference> = arrayListOf(),
-    val balance: Balance = Balance()
+    val balance: Balance = Balance(),
+    val description: String = ""
 )
 
 data class GroupItem(
@@ -39,20 +40,22 @@ object GroupHandler {
 
     fun group(document_reference: DocumentReference) = document_reference
 
-    fun createGroup() {
+    fun createGroup(name: String, description: String, callback: (String) -> Unit) {
         FirestoreHandler.groups
             .add(
                 Group(
-                    "TEST_GROUP",
+                    name,
                     arrayListOf(UserHandler.currentUserReference.path),
-                    Balance(HashMap(), ArrayList(), Timestamp.now())
+                    Balance(HashMap(), ArrayList(), Timestamp.now()),
+                    description
                 )
             )
             .addOnSuccessListener { documentReference ->
                 UserHandler.currentUserReference.update(
                     "memberOfGroups",
-                    FieldValue.arrayUnion(documentReference)
+                    FieldValue.arrayUnion(documentReference.path)
                 )
+                callback(documentReference.path)
             }
     }
 

@@ -31,7 +31,9 @@ object UserHandler {
     fun userDetails(callback: (UserDetails) -> Unit, failureCallback: () -> Unit) =
         currentUserReference
         .get()
-        .addOnSuccessListener { result -> result.toObject<UserDetails>()?.let { callback(it) } }
+            .addOnSuccessListener { result ->
+                result.toObject<UserDetails>()?.let { callback(it) }
+            }
         .addOnFailureListener { failureCallback() }
 
     fun initiateUserDetails() {

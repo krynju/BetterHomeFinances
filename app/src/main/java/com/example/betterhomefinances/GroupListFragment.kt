@@ -53,6 +53,8 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
         binding.list.adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
         binding.list.setListener(this)
 
+        binding.button3.setOnClickListener { onCreateGroupClick(it) }
+
         navController = findNavController()
         return binding.root
     }
@@ -81,5 +83,10 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
     override fun onSwipedLeft(position: Int) {
         TODO("Not yet implemented")
+    }
+
+    private fun onCreateGroupClick(v: View) {
+        val action = GroupListFragmentDirections.actionNavGroupsToCreateGroup()
+        findNavController().navigate(action)
     }
 }

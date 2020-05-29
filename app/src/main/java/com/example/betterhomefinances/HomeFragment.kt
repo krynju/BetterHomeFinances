@@ -67,12 +67,12 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
         GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
 
-        doplot()
+        configurePlot()
 
         return binding.root
     }
 
-    fun doplot() {
+    fun configurePlot() {
         //        tvX = findViewById(R.id.tvXMax)
 //        tvY = findViewById(R.id.tvYMax)
 
@@ -151,14 +151,15 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
     fun addDataToPlot() {
         val entries: ArrayList<PieEntry> = ArrayList()
 
-
         for (groupItem in GroupHandler.data) {
-            entries.add(
-                PieEntry(
-                    groupItem.group.balance.balances[UserHandler.currentUserReference.path]!!.toFloat(),
-                    groupItem.group.name
+            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserReference.path)) {
+                entries.add(
+                    PieEntry(
+                        groupItem.group.balance.balances[UserHandler.currentUserReference.path]!!.toFloat(),
+                        groupItem.group.name
+                    )
                 )
-            )
+            }
         }
 
 
@@ -169,7 +170,7 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
-        dataSet.setValueTextColor(Color.BLACK)
+        dataSet.valueTextColor = Color.BLACK
 
         val data = PieData(dataSet)
         data.setValueFormatter(PercentFormatter(chart))

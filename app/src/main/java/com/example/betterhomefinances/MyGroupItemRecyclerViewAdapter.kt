@@ -51,22 +51,30 @@ class MyGroupItemRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = contentHandler.data[position]
         holder.mGroupNameView.text = item.group.name
-
-        val balance = item.group.balance.balances[UserHandler.currentUserReference.path]!!
+        var balance = 0.0
+        if (item.group.balance.balances.containsKey(UserHandler.currentUserReference.path)) {
+            balance = item.group.balance.balances[UserHandler.currentUserReference.path]!!
+        }
         val rounded = (round(balance * 100) / 100)
-        val prefix = if (rounded > 0) {
-            "+"
-        } else {
-            "-"
+        var prefix = ""
+        if (rounded > 0) {
+            prefix = "+"
+        } else if (rounded < 0) {
+            prefix = "-"
         }
 
         holder.mBalanceView.text = prefix + rounded.toString()
         if (rounded > 0) {
             holder.mBalanceView.setTextColor(holder.mView.resources.getColor(R.color.secondaryGreen))
-        } else {
+        } else if (rounded < 0) {
             holder.mBalanceView.setTextColor(holder.mView.resources.getColor(R.color.secondaryRed))
         }
-        holder.mDescriptionView.text = item.group.name
+        var desc = item.group.description
+        if (item.group.description.length > 30) {
+            desc = desc.substring(0, 27) + "..."
+        }
+
+        holder.mDescriptionView.text = desc
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
