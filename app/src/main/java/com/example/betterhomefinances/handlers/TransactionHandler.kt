@@ -25,8 +25,8 @@ data class Transaction(
 )
 
 data class TransactionItem(
-    val reference: TransactionReference,
-    val transaction: Transaction
+    val reference: TransactionReference? = null,
+    val transaction: Transaction? = null
 )
 
 
@@ -80,7 +80,7 @@ object TransactionHandler {
         value: Double,
         category: String,
         description: String,
-        borrowers: HashMap<UserReference, Double>
+        borrowers: HashMap<UserReference, Double>, successCallback: () -> Unit
     ) {
         db.runTransaction { dbTransaction ->
             val groupRef = ref(groupReference)
@@ -108,7 +108,7 @@ object TransactionHandler {
                 )
             )
             null
-        }.addOnSuccessListener { Log.d(TAG, "transaction done") }
+        }.addOnSuccessListener { Log.d(TAG, "transaction done"); successCallback() }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
     }
 
@@ -248,9 +248,23 @@ class TransactionStorage(groupRefPath: GroupReference) {
     var data: ObservableList<TransactionItem> = ObservableArrayList<TransactionItem>()
 
     init {
-        TransactionHandler.getTransactionsRefPair(groupRefPath) {
+        sub(groupRefPath) {
             data.addAll(it)
         }
+    }
+
+
+    fun sub(groupRefPath: GroupReference, callback: (List<TransactionItem>) -> Unit) {
+        TransactionHandler.transactionsReference(groupRefPath).limit(10)
+            .addSnapshotListener { snapshot, e ->
+                val ret = snapshot!!.map {
+                    TransactionItem(
+                        it.reference.path,
+                        it.toObject<Transaction>()
+                    )
+                }
+                callback(ret)
+            }
     }
 }
 

@@ -43,8 +43,8 @@ class MyTransactionsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = contentHandler.data[position]
-        holder.mIdView.text = item.transaction.title
-        holder.mContentView.text = item.transaction.value.toString()
+        holder.mIdView.text = item.transaction?.title
+        holder.mContentView.text = item.transaction?.value.toString()
 
         with(holder.mView) {
             tag = item

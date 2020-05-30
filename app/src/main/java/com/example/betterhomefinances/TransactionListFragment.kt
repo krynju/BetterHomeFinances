@@ -60,7 +60,7 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
     override fun onTransactionListFragmentInteraction(v: View, item: TransactionItem) {
         val action =
             TransactionListFragmentDirections.actionTransactionsFragmentToTransactionDetails(
-                item.reference
+                item.reference.toString()
             )
         v.findNavController().navigate(action)
     }

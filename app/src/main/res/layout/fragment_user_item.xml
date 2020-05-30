@@ -11,7 +11,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/u_val"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
@@ -33,16 +33,11 @@
         android:id="@+id/text_group_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_weight="8"
         android:fontFamily="sans-serif"
         android:text="title text"
         android:textColor="#000000"
         android:textSize="18sp" />
 
-    <com.google.android.material.radiobutton.MaterialRadioButton
-
-        android:id="@+id/radio_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </LinearLayout>
 

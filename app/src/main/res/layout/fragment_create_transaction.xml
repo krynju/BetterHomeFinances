@@ -95,4 +95,22 @@
         tools:context=".CreateTransaction"
         tools:listitem="@layout/fragment_user_item" />
 
+    <!--    <com.google.android.material.textfield.TextInputLayout-->
+    <!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginEnd="16dp"-->
+    <!--        android:hint="Paid by"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/list"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@+id/transaction_value_layout"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/transaction_description_layout">-->
+
+    <!--        <AutoCompleteTextView            android:id="@+id/filled_exposed_dropdown"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content" />-->
+
+    <!--    </com.google.android.material.textfield.TextInputLayout>-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

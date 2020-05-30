@@ -4,6 +4,7 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
@@ -30,16 +31,22 @@ object GroupHandler {
 
     init {
         UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
-            print(snapshot)
             val ud = snapshot?.toObject<UserDetails>()!!
             val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
             val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
-
-
             if (currentIds.union(fetchedIds).size > currentIds.size) {
-                getGroupsRefPair(fetchedIds.subtract(currentIds).toList()) {
-                    data.addAll(it)
-                }
+                getGroupsRefPair(fetchedIds.subtract(currentIds).toList(),
+                    { data.addAll(it) },
+                    {
+                        data.replaceAll { t: GroupItem? ->
+                            if (t!!.reference in it.map { it.reference }) {
+                                it.find { groupItem -> groupItem.reference == t!!.reference }
+                            } else {
+                                t
+                            }
+                        }
+                    },
+                    {})
             } else if (fetchedIds.size < currentIds.size) {
                 val el = currentIds.subtract(fetchedIds)
                 val toRemove = data.filter { it.reference.split("/")[1] in el }
@@ -90,17 +97,48 @@ object GroupHandler {
         }
     }
 
-    private fun getGroupsRefPair(groupIds: List<String>, callback: (List<GroupItem>) -> Unit) {
+    private fun getGroupsRefPair(
+        groupIds: List<String>,
+        callback_add: (List<GroupItem>) -> Unit,
+        callback_update: (List<GroupItem>) -> Unit,
+        callback_remove: (List<GroupItem>) -> Unit
+    ) {
         UserHandler.getUserDetails(UserHandler.currentUserDocumentReference, {
             FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
-                .get()
-                .addOnSuccessListener { result ->
-                    callback(result.map {
-                        GroupItem(
-                            it.reference.path,
-                            it.toObject<Group>()
-                        )
-                    })
+                .addSnapshotListener { result, e ->
+
+                    var added: MutableList<GroupItem> = mutableListOf()
+                    var updated: MutableList<GroupItem> = mutableListOf()
+                    var removed: MutableList<GroupItem> = mutableListOf()
+
+                    for (dc in result!!.documentChanges) {
+                        when (dc.type) {
+                            DocumentChange.Type.ADDED -> added.add(
+                                GroupItem(
+                                    dc.document.reference.path,
+                                    dc.document.toObject<Group>()
+                                )
+                            )
+                            DocumentChange.Type.MODIFIED -> updated.add(
+                                GroupItem(
+                                    dc.document.reference.path,
+                                    dc.document.toObject<Group>()
+                                )
+                            )
+                            DocumentChange.Type.REMOVED -> removed.add(
+                                GroupItem(
+                                    dc.document.reference.path,
+                                    dc.document.toObject<Group>()
+                                )
+                            )
+
+                        }
+                    }
+
+                    callback_add(added)
+                    callback_update(updated)
+                    callback_remove(removed)
+
                 }
         }, {})
 
