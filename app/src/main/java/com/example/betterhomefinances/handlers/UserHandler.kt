@@ -68,13 +68,23 @@ object UserHandler {
             ArrayList<String>()
         )
 
-        users
-            .document(userId.toString())
-            .set(data, SetOptions.merge()) // TODO: this overwrites the config
-            .addOnSuccessListener {
-                Log.d(TAG, "Initiated userConfig record for $userId")
+        var usersRef = FirestoreHandler.db.collection("users").document(userId!!)
+
+        usersRef.get().addOnSuccessListener { docSnapshot ->
+            if (docSnapshot.exists()) {
                 callback()
+            } else {
+                users
+                    .document(userId.toString())
+                    .set(data, SetOptions.merge()) // TODO: this overwrites the config
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Initiated userConfig record for $userId")
+                        callback()
+                    }
             }
+        };
+
+
     }
 
 }

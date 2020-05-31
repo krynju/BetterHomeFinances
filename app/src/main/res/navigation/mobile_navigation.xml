@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_nav_groupDetails_to_createTransaction"
             app:destination="@id/nav_createTransaction" />
+        <action
+            android:id="@+id/action_nav_groupDetails_to_nav_paybacks"
+            app:destination="@id/nav_paybacks" />
     </fragment>
     <fragment
         android:id="@+id/nav_transactionListFragment"
@@ -89,7 +92,24 @@
         <argument android:name="groupReferencePath" />
         <argument
             android:name="transactionReferencePath"
-            app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="value"
+            app:argType="float" />
+        <argument
+            android:name="loaner"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_paybacks"
+        android:name="com.example.betterhomefinances.PaybackListFragment"
+        android:label="Paybacks"
+        tools:layout="@layout/fragment_payback_list">
+
+        <argument android:name="groupReferencePath" />
+        <action
+            android:id="@+id/action_nav_paybacks_to_nav_createTransaction"
+            app:destination="@id/nav_createTransaction" />
     </fragment>
 </navigation>

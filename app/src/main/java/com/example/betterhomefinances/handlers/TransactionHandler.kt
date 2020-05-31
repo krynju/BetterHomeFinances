@@ -160,7 +160,7 @@ object TransactionHandler {
 
     fun deleteTransaction(
         transactionReferencePath: TransactionReference,
-        groupReference: GroupReference
+        groupReference: GroupReference, callback: () -> Unit
     ) {
         db.runTransaction { dbTransaction ->
             val transactionReference = ref(transactionReferencePath)
@@ -180,7 +180,7 @@ object TransactionHandler {
             dbTransaction.set(groupRef, group)
             dbTransaction.delete(transactionReference)
             null
-        }.addOnSuccessListener { Log.d(TAG, "transaction done") }
+        }.addOnSuccessListener { Log.d(TAG, "transaction done");callback() }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
     }
 

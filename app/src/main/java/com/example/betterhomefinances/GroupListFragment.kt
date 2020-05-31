@@ -73,7 +73,7 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
     override fun onSwipedRight(position: Int) {
         val action = GroupListFragmentDirections.actionNavGroupsToNavCreateTransaction(
             GroupHandler.data[position].reference,
-            null
+            null, 0.0F, null
         )
         navController?.navigate(action)
     }

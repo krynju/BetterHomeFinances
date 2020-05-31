@@ -19,10 +19,12 @@ import kotlinx.android.synthetic.main.fragment_user_item.view.*
 import kotlin.math.round
 
 
-class MyUsersRecyclerViewAdapter(
+class UserItemRecyclerViewAdapter(
     private val groupReference: GroupReference,
-    transaction: Transaction?
-) : RecyclerView.Adapter<MyUsersRecyclerViewAdapter.ViewHolder>() {
+    transaction: Transaction?,
+    toDouble: Double,
+    loaner: String?
+) : RecyclerView.Adapter<UserItemRecyclerViewAdapter.ViewHolder>() {
     private var groupItem: GroupItem = GroupHandler.data.find { it.reference == groupReference }!!
     var data: List<UserItem> = listOf()
 
@@ -52,6 +54,11 @@ class MyUsersRecyclerViewAdapter(
                         }
                         switchList[u] = true
                     }
+                } else if (loaner != null) {
+                    val ind = data.indexOfFirst { it.reference == loaner }
+                    indivitualValues[ind] = toDouble
+                    value = toDouble
+                    switchList[ind] = true
                 }
                 notifyDataSetChanged()
             }

@@ -9,34 +9,23 @@
 
     <com.tsuryo.swipeablerv.SwipeableRecyclerView
         android:id="@+id/list"
-        android:name="com.example.betterhomefinances.GroupListFragment"
+        android:name="com.example.betterhomefinances.PaybackListFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:leftBgColor="@color/colorAccent"
-        app:leftText="New"
 
+        app:leftText="Pay"
         app:textColor="@android:color/white"
         app:textSize="20sp"
-        tools:context=".GroupListFragment"
-        tools:listitem="@layout/fragment_group_item">
+        tools:context=".PaybackListFragment"
+        tools:listitem="@layout/fragment_payback_item">
 
 
     </com.tsuryo.swipeablerv.SwipeableRecyclerView>
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="New group"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

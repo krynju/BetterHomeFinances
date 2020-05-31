@@ -1,9 +1,12 @@
 package com.example.betterhomefinances
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.betterhomefinances.databinding.FragmentSlideshowBinding
@@ -24,6 +27,7 @@ class SlideshowFragment : Fragment() {
     }
 
     fun onClickJoin() {
+        hideKeyboard()
         val ss = binding.groupname.text.toString()
         if (ss != "") {
             binding.joinButton.isEnabled = false
@@ -32,5 +36,19 @@ class SlideshowFragment : Fragment() {
                 { binding.joinButton.isEnabled = true })
         }
 
+    }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

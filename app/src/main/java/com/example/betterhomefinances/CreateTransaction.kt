@@ -1,18 +1,22 @@
 package com.example.betterhomefinances
 
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.betterhomefinances.adapters.MyUsersRecyclerViewAdapter
+import com.example.betterhomefinances.adapters.UserItemRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentCreateTransactionBinding
 import com.example.betterhomefinances.handlers.*
+import kotlin.math.round
 
 
 interface OnUserListFragmentInteractionListener {
@@ -27,13 +31,18 @@ class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
     var groupReferencePath: GroupReference? = null
     var transactionReferencePath: TransactionReference? = null
     private var mode: String = "create"
-    private lateinit var userAdapter: MyUsersRecyclerViewAdapter
+    private var loaner: String? = null
+    private var value: Double = 0.0
+    private lateinit var userAdapter: UserItemRecyclerViewAdapter
     var transactionStorage: TransactionStorage? = null
     var transaction: Transaction? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupReferencePath = arguments?.get("groupReferencePath") as GroupReference?
+        val v = arguments?.get("value") as Float
+        value = v.toDouble()
+        loaner = arguments?.get("loaner") as String?
         transactionReferencePath =
             arguments?.get("transactionReferencePath") as TransactionReference?
         if (transactionReferencePath != null) {
@@ -42,9 +51,10 @@ class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
             transaction =
                 transactionStorage!!.data.find { it.reference == transactionReferencePath }!!.transaction
         }
+
         userAdapter =
-            MyUsersRecyclerViewAdapter(
-                groupReferencePath!!, transaction
+            UserItemRecyclerViewAdapter(
+                groupReferencePath!!, transaction, value, loaner
             )
     }
 
@@ -83,12 +93,16 @@ class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
             binding.transactionTitle.setText(transaction!!.title)
             binding.transactionDescription.setText(transaction!!.description)
             binding.transactionValue.setText(transaction!!.value.toString())
+        } else if (loaner != null) {
+            binding.transactionTitle.setText("Payback")
+            binding.transactionValue.setText((round(value * 100) / 100).toString())
         }
 
         return binding.root
     }
 
     fun preTransaction(v: View) {
+        hideKeyboard()
 
         val tran_value = userAdapter.value
         if (tran_value == 0.0) return
@@ -119,6 +133,7 @@ class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
                 lender = UserHandler.currentUserReference,
                 value = tran_value
             ) {
+
                 findNavController().navigateUp()
 //            val view = this.currentFocus
 //            view?.let { v ->
@@ -138,11 +153,27 @@ class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
                 borrowers = b
 
             ) {
+
                 findNavController().navigateUp()
             }
         }
 
     }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
 
     override fun onUserListFragmentInteraction(v: View, item: UserItem) {
         TODO("Not yet implemented")

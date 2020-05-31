@@ -16,11 +16,7 @@ import com.example.betterhomefinances.handlers.UserHandler
 import kotlinx.android.synthetic.main.fragment_group_item.view.*
 import kotlin.math.round
 
-/**
- * [RecyclerView.Adapter] that can display a [GroupItemDUMMYTOREMOVE] and makes a call to the
- * specified [OnGroupListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
- */
+
 class MyGroupItemRecyclerViewAdapter(
     private val contentHandler: GroupHandler,
     private val mListener: OnGroupListFragmentInteractionListener
@@ -56,14 +52,12 @@ class MyGroupItemRecyclerViewAdapter(
         var prefix = ""
         if (rounded > 0) {
             prefix = "+"
-        } else if (rounded < 0) {
-            prefix = "-"
         }
 
         holder.mBalanceView.text = prefix + rounded.toString()
-        if (rounded > 0) {
-            holder.mBalanceView.setTextColor(holder.mView.resources.getColor(R.color.secondaryGreen))
-        } else if (rounded < 0) {
+
+        holder.mBalanceView.setTextColor(holder.mView.resources.getColor(R.color.secondaryGreen))
+        if (rounded < 0) {
             holder.mBalanceView.setTextColor(holder.mView.resources.getColor(R.color.secondaryRed))
         }
         var desc = item.group.description

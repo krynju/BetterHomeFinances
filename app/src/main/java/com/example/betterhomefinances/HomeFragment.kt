@@ -147,24 +147,34 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
     fun addDataToPlot() {
         val entries: ArrayList<PieEntry> = ArrayList()
-
+        val colors = mutableListOf<Int>()
         for (groupItem in GroupHandler.data) {
-            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path) && groupItem.group.balance.balances[UserHandler.currentUserReference]!! > 0.1) {
+            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path) && abs(
+                    groupItem.group.balance.balances[UserHandler.currentUserReference]!!
+                ) > 0.1
+            ) {
                 entries.add(
                     PieEntry(
                         abs(groupItem.group.balance.balances[UserHandler.currentUserDocumentReference.path]!!.toFloat()),
                         groupItem.group.name
                     )
                 )
+                val v = groupItem.group.balance.balances[UserHandler.currentUserReference]!!
+                if (v >= 0) {
+                    colors.add(Color.parseColor("#52d053"))
+                } else {
+                    colors.add(Color.parseColor("#d3290f"))
+                }
+
             }
         }
 
 
-        val dataSet = PieDataSet(entries, "Election Results")
+        val dataSet = PieDataSet(entries, "")
 
         dataSet.setDrawIcons(false)
+        dataSet.colors = colors
 
-        dataSet.color = Color.parseColor("#52d053")
         dataSet.sliceSpace = 3f
         dataSet.iconsOffset = MPPointF(0F, 40F)
         dataSet.selectionShift = 5f
@@ -194,7 +204,7 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
     override fun onSwipedRight(position: Int) {
         val action = HomeFragmentDirections.actionNavHomeToCreateTransaction(
             GroupHandler.data[position].reference,
-            null
+            null, 0.0F, null
         )
         navController?.navigate(action)
     }

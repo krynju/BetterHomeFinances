@@ -4,10 +4,7 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 
 typealias GroupReference = String
@@ -26,11 +23,14 @@ data class GroupItem(
 
 object GroupHandler {
 
+    lateinit var registration: ListenerRegistration
+    lateinit var registration2: ListenerRegistration
+
     var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
 
-
     init {
-        UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
+        registration2 =
+            UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
             val ud = snapshot?.toObject<UserDetails>()!!
             val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
             val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
@@ -62,6 +62,7 @@ object GroupHandler {
     fun group(id: GroupReference) = FirestoreHandler.groups.document(id)
 
     fun group(document_reference: DocumentReference) = document_reference
+    fun groupFromRef(groupRefPath: GroupReference) = FirestoreHandler.db.document(groupRefPath)
 
     fun createGroup(name: String, description: String, callback: (String) -> Unit) {
         FirestoreHandler.groups
@@ -97,6 +98,28 @@ object GroupHandler {
         }
     }
 
+    fun joinGroup(groupCode: String, callback_success: () -> Unit, callback_fail: () -> Unit) {
+        val groupRef = "groups/" + groupCode
+
+        db.runTransaction { dbTransaction ->
+            val group = dbTransaction.get(db.document(groupRef))
+            if (group.exists()) {
+
+                dbTransaction.update(
+                    group.reference,
+                    "members",
+                    FieldValue.arrayUnion(UserHandler.currentUserReference)
+                )
+                dbTransaction.update(
+                    UserHandler.currentUserDocumentReference,
+                    "memberOfGroups",
+                    FieldValue.arrayUnion(groupRef)
+                )
+            }
+
+        }.addOnSuccessListener { callback_success() }.addOnFailureListener { callback_fail() }
+    }
+
     private fun getGroupsRefPair(
         groupIds: List<String>,
         callback_add: (List<GroupItem>) -> Unit,
@@ -104,34 +127,35 @@ object GroupHandler {
         callback_remove: (List<GroupItem>) -> Unit
     ) {
         UserHandler.getUserDetails(UserHandler.currentUserDocumentReference, {
-            FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
+            registration = FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
                 .addSnapshotListener { result, e ->
 
                     var added: MutableList<GroupItem> = mutableListOf()
                     var updated: MutableList<GroupItem> = mutableListOf()
                     var removed: MutableList<GroupItem> = mutableListOf()
+                    if (result != null) {
+                        for (dc in result!!.documentChanges) {
+                            when (dc.type) {
+                                DocumentChange.Type.ADDED -> added.add(
+                                    GroupItem(
+                                        dc.document.reference.path,
+                                        dc.document.toObject<Group>()
+                                    )
+                                )
+                                DocumentChange.Type.MODIFIED -> updated.add(
+                                    GroupItem(
+                                        dc.document.reference.path,
+                                        dc.document.toObject<Group>()
+                                    )
+                                )
+                                DocumentChange.Type.REMOVED -> removed.add(
+                                    GroupItem(
+                                        dc.document.reference.path,
+                                        dc.document.toObject<Group>()
+                                    )
+                                )
 
-                    for (dc in result!!.documentChanges) {
-                        when (dc.type) {
-                            DocumentChange.Type.ADDED -> added.add(
-                                GroupItem(
-                                    dc.document.reference.path,
-                                    dc.document.toObject<Group>()
-                                )
-                            )
-                            DocumentChange.Type.MODIFIED -> updated.add(
-                                GroupItem(
-                                    dc.document.reference.path,
-                                    dc.document.toObject<Group>()
-                                )
-                            )
-                            DocumentChange.Type.REMOVED -> removed.add(
-                                GroupItem(
-                                    dc.document.reference.path,
-                                    dc.document.toObject<Group>()
-                                )
-                            )
-
+                            }
                         }
                     }
 
@@ -145,18 +169,5 @@ object GroupHandler {
 
     }
 
-    fun joinGroup(groupCode: String, callback_success: () -> Unit, callback_fail: () -> Unit) {
-        val groupRef = "groups/" + groupCode
 
-        db.runTransaction { dbTransaction ->
-            val group = dbTransaction.get(db.document(groupRef))
-
-            dbTransaction.update(group.reference, "members", FieldValue.arrayUnion(groupRef))
-            dbTransaction.update(
-                UserHandler.currentUserDocumentReference,
-                "memberOfGroups",
-                FieldValue.arrayUnion(groupRef)
-            )
-        }.addOnSuccessListener { callback_success() }.addOnFailureListener { callback_fail() }
-    }
 }
