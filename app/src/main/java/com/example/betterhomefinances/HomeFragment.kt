@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.betterhomefinances.adapters.MyGroupItemRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentHomeBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
@@ -26,6 +27,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import com.github.mikephil.charting.utils.MPPointF
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback
+import kotlin.math.abs
 
 
 class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
@@ -50,7 +52,11 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
+        binding.recyclerView.adapter =
+            MyGroupItemRecyclerViewAdapter(
+                GroupHandler,
+                listener
+            )
         binding.recyclerView.setListener(this)
         navController = findNavController()
 
@@ -143,10 +149,10 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         val entries: ArrayList<PieEntry> = ArrayList()
 
         for (groupItem in GroupHandler.data) {
-            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path)) {
+            if (groupItem.group.balance.balances.containsKey(UserHandler.currentUserDocumentReference.path) && groupItem.group.balance.balances[UserHandler.currentUserReference]!! > 0.1) {
                 entries.add(
                     PieEntry(
-                        groupItem.group.balance.balances[UserHandler.currentUserDocumentReference.path]!!.toFloat(),
+                        abs(groupItem.group.balance.balances[UserHandler.currentUserDocumentReference.path]!!.toFloat()),
                         groupItem.group.name
                     )
                 )

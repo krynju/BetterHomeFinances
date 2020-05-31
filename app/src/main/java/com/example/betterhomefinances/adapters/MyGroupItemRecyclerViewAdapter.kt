@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.adapters
 
 
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
+import com.example.betterhomefinances.OnGroupListFragmentInteractionListener
+import com.example.betterhomefinances.R
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
 import com.example.betterhomefinances.handlers.UserHandler
@@ -32,7 +34,8 @@ class MyGroupItemRecyclerViewAdapter(
             val item = v.tag as GroupItem
             mListener.onGroupListFragmentInteraction(v, item.reference)
         }
-        mOnListChangedCallback = MyOnListChangedCallback(this)
+        mOnListChangedCallback =
+            MyOnListChangedCallback(this)
         contentHandler.data.addOnListChangedCallback(mOnListChangedCallback)
     }
 

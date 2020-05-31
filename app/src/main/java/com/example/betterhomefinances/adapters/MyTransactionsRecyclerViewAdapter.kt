@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.adapters
 
 
 import android.view.LayoutInflater
@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.recyclerview.widget.RecyclerView
+import com.example.betterhomefinances.OnTransactionListFragmentInteractionListener
+import com.example.betterhomefinances.R
 import com.example.betterhomefinances.handlers.TransactionItem
 import com.example.betterhomefinances.handlers.TransactionStorage
 import kotlinx.android.synthetic.main.fragment_transaction_item.view.*
+import kotlin.math.round
 
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
@@ -26,12 +29,13 @@ class MyTransactionsRecyclerViewAdapter(
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as TransactionItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
             mListenerTransaction?.onTransactionListFragmentInteraction(v, item)
         }
 
-        mOnListChangeCallback = MyTransactionOnListChangedCallback(this)
+        mOnListChangeCallback =
+            MyTransactionOnListChangedCallback(
+                this
+            )
         contentHandler.data.addOnListChangedCallback(mOnListChangeCallback)
     }
 
@@ -44,7 +48,9 @@ class MyTransactionsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = contentHandler.data[position]
         holder.mIdView.text = item.transaction?.title
-        holder.mContentView.text = item.transaction?.value.toString()
+        holder.mContentView.text = item.transaction!!.timestamp!!.toDate().toString()
+        holder.mVal.text = (round(item.transaction.value * 100) / 100).toString()
+
 
         with(holder.mView) {
             tag = item
@@ -55,9 +61,9 @@ class MyTransactionsRecyclerViewAdapter(
     override fun getItemCount(): Int = contentHandler.data.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
-
+        val mIdView: TextView = mView.text_group_name
+        val mContentView: TextView = mView.text_description
+        val mVal: TextView = mView.text_balance
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"
         }

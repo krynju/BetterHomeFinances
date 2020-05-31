@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.betterhomefinances.adapters.MyTransactionsRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentTransactionListBinding
 import com.example.betterhomefinances.handlers.GroupReference
 import com.example.betterhomefinances.handlers.TransactionHandler
@@ -26,8 +27,6 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
     private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!
 
-    // TODO: Customize parameters
-    private var columnCount = 1
 
     private var _groupReferencePath: GroupReference? = null
     private val groupReferencePath get() = _groupReferencePath!!
@@ -51,7 +50,10 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
 
         binding.list.layoutManager = LinearLayoutManager(context)
         binding.list.adapter =
-            MyTransactionsRecyclerViewAdapter(transactionHandler, listenerTransaction)
+            MyTransactionsRecyclerViewAdapter(
+                transactionHandler,
+                listenerTransaction
+            )
 
         binding.list.setListener(this)
         return binding.root
@@ -76,6 +78,9 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
     }
 
     override fun onSwipedLeft(position: Int) {
-        TODO("Not yet implemented")
+        TransactionHandler.deleteTransaction(
+            transactionHandler.data[position]?.reference!!,
+            groupReferencePath
+        )
     }
 }

@@ -36,7 +36,7 @@ object GroupHandler {
             val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
             if (currentIds.union(fetchedIds).size > currentIds.size) {
                 getGroupsRefPair(fetchedIds.subtract(currentIds).toList(),
-                    { data.addAll(it) },
+                    { data.addAll(0, it) },
                     {
                         data.replaceAll { t: GroupItem? ->
                             if (t!!.reference in it.map { it.reference }) {
@@ -143,5 +143,20 @@ object GroupHandler {
         }, {})
 
 
+    }
+
+    fun joinGroup(groupCode: String, callback_success: () -> Unit, callback_fail: () -> Unit) {
+        val groupRef = "groups/" + groupCode
+
+        db.runTransaction { dbTransaction ->
+            val group = dbTransaction.get(db.document(groupRef))
+
+            dbTransaction.update(group.reference, "members", FieldValue.arrayUnion(groupRef))
+            dbTransaction.update(
+                UserHandler.currentUserDocumentReference,
+                "memberOfGroups",
+                FieldValue.arrayUnion(groupRef)
+            )
+        }.addOnSuccessListener { callback_success() }.addOnFailureListener { callback_fail() }
     }
 }

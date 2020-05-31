@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.adapters
 
 
 import android.os.Handler
@@ -20,7 +20,8 @@ import kotlin.math.round
 
 
 class MyUsersRecyclerViewAdapter(
-    private val groupReference: GroupReference
+    private val groupReference: GroupReference,
+    transaction: Transaction?
 ) : RecyclerView.Adapter<MyUsersRecyclerViewAdapter.ViewHolder>() {
     private var groupItem: GroupItem = GroupHandler.data.find { it.reference == groupReference }!!
     var data: List<UserItem> = listOf()
@@ -38,11 +39,20 @@ class MyUsersRecyclerViewAdapter(
                 data = it.map {
                     UserItem(it.reference.path, it.toObject<UserDetails>())
                 }
+
                 indivitualValues = it.map { 0.0 } as ArrayList<Double>
                 switchList = it.map { false } as ArrayList<Boolean>
-                radioList = it.map { false } as ArrayList<Boolean>
-                radioList[data.indexOfFirst { it.reference == UserHandler.currentUserReference }] =
-                    true
+//                    radioList = it.map { false } as ArrayList<Boolean>
+//                    radioList[data.indexOfFirst { it.reference == UserHandler.currentUserReference }] =
+//                        true
+                if (transaction != null) {
+                    for (u in data.indices) {
+                        if (transaction.borrowers.containsKey(data[u].reference)) {
+                            indivitualValues[u] = transaction.borrowers[data[u].reference]!!
+                        }
+                        switchList[u] = true
+                    }
+                }
                 notifyDataSetChanged()
             }
 

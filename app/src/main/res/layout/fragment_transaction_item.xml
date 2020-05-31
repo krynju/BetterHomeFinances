@@ -1,22 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
+
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
+    android:divider="?attr/dividerHorizontal"
+    android:dividerPadding="1dp"
+
+    android:gravity="center_vertical"
     android:minHeight="?attr/minTouchTargetSize"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item_number"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="title_text_ahaha"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/text_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="description_text_ha"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/content"
+        android:id="@+id/text_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_weight="1"
+
+        android:textAlignment="textEnd"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="21sp" />
 </LinearLayout>

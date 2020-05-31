@@ -7,7 +7,9 @@ import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.example.betterhomefinances.handlers.FirestoreHandler.ref
 import com.example.betterhomefinances.handlers.UserHandler.currentUserReference
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import kotlin.math.abs
 
@@ -121,7 +123,8 @@ object TransactionHandler {
         value: Double,
         category: String,
         description: String,
-        borrowers: HashMap<UserReference, Double>
+        borrowers: HashMap<UserReference, Double>,
+        callback: () -> Unit
     ) {
         db.runTransaction { dbTransaction ->
             val transactionReference = ref(transactionReferencePath)
@@ -150,7 +153,7 @@ object TransactionHandler {
             dbTransaction.set(groupRef, group)
             dbTransaction.set(transactionReference, transaction)
             null
-        }.addOnSuccessListener { Log.d(TAG, "transaction done") }
+        }.addOnSuccessListener { Log.d(TAG, "transaction done"); callback() }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
 
     }
@@ -248,22 +251,63 @@ class TransactionStorage(groupRefPath: GroupReference) {
     var data: ObservableList<TransactionItem> = ObservableArrayList<TransactionItem>()
 
     init {
-        sub(groupRefPath) {
-            data.addAll(it)
-        }
+        sub(groupRefPath, {
+            data.addAll(0, it)
+        }, {
+            data.replaceAll { t: TransactionItem? ->
+                if (t!!.reference in it.map { it.reference }) {
+                    it.find { groupItem -> groupItem.reference == t!!.reference }
+                } else {
+                    t
+                }
+            }
+        }, { data.removeAll(it) })
     }
 
 
-    fun sub(groupRefPath: GroupReference, callback: (List<TransactionItem>) -> Unit) {
-        TransactionHandler.transactionsReference(groupRefPath).limit(10)
+    fun sub(
+        groupRefPath: GroupReference,
+        callback_add: (List<TransactionItem>) -> Unit,
+        callback_update: (List<TransactionItem>) -> Unit,
+        callback_remove: (List<TransactionItem>) -> Unit
+    ) {
+        TransactionHandler.transactionsReference(groupRefPath)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, e ->
-                val ret = snapshot!!.map {
-                    TransactionItem(
-                        it.reference.path,
-                        it.toObject<Transaction>()
-                    )
+
+
+                var added: MutableList<TransactionItem> = mutableListOf()
+                var updated: MutableList<TransactionItem> = mutableListOf()
+                var removed: MutableList<TransactionItem> = mutableListOf()
+
+                for (dc in snapshot!!.documentChanges) {
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED -> added.add(
+                            TransactionItem(
+                                dc.document.reference.path,
+                                dc.document.toObject<Transaction>()
+                            )
+                        )
+                        DocumentChange.Type.MODIFIED -> updated.add(
+                            TransactionItem(
+                                dc.document.reference.path,
+                                dc.document.toObject<Transaction>()
+                            )
+                        )
+                        DocumentChange.Type.REMOVED -> removed.add(
+                            TransactionItem(
+                                dc.document.reference.path,
+                                dc.document.toObject<Transaction>()
+                            )
+                        )
+
+                    }
                 }
-                callback(ret)
+
+                callback_add(added)
+                callback_update(updated)
+                callback_remove(removed)
+
             }
     }
 }

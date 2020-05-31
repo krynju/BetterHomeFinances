@@ -38,12 +38,12 @@
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.betterhomefinances.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="Join a group!"
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_groupDetails"
         android:name="com.example.betterhomefinances.GroupDetailsFragment"
-        android:label="fragment_group_details"
+        android:label="Group Details"
         tools:layout="@layout/fragment_group_details">
         <argument android:name="groupReferencePath" />
         <action
@@ -56,7 +56,7 @@
     <fragment
         android:id="@+id/nav_transactionListFragment"
         android:name="com.example.betterhomefinances.TransactionListFragment"
-        android:label="fragment_transaction_list"
+        android:label="Transactions"
         tools:layout="@layout/fragment_transaction_list">
         <action
             android:id="@+id/action_transactionsFragment_to_transactionDetails"
@@ -69,7 +69,7 @@
     <fragment
         android:id="@+id/nav_transactionDetails"
         android:name="com.example.betterhomefinances.TransactionDetails"
-        android:label="fragment_transaction_details"
+        android:label="Transaction Details"
         tools:layout="@layout/fragment_transaction_details">
         <argument android:name="transactionReferencePath" />
         <action
@@ -79,12 +79,12 @@
     <fragment
         android:id="@+id/nav_createGroup"
         android:name="com.example.betterhomefinances.CreateGroup"
-        android:label="fragment_create_group"
+        android:label="Group Creator"
         tools:layout="@layout/fragment_create_group" />
     <fragment
         android:id="@+id/nav_createTransaction"
         android:name="com.example.betterhomefinances.CreateTransaction"
-        android:label="fragment_create_transaction"
+        android:label="Transaction Creator"
         tools:layout="@layout/fragment_create_transaction">
         <argument android:name="groupReferencePath" />
         <argument

@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.betterhomefinances.adapters.MyGroupItemRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentGroupListBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback
@@ -42,7 +43,11 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
         _binding = FragmentGroupListBinding.inflate(inflater, container, false)
 
         binding.list.layoutManager = LinearLayoutManager(context)
-        binding.list.adapter = MyGroupItemRecyclerViewAdapter(GroupHandler, listener)
+        binding.list.adapter =
+            MyGroupItemRecyclerViewAdapter(
+                GroupHandler,
+                listener
+            )
         binding.list.setListener(this)
 
         binding.button3.setOnClickListener { onCreateGroupClick(it) }
