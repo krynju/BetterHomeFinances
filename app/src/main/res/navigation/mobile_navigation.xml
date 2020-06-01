@@ -78,6 +78,7 @@
         <action
             android:id="@+id/action_nav_transactionDetails_to_nav_createTransaction"
             app:destination="@id/nav_createTransaction" />
+        <argument android:name="groupReferencePath" />
     </fragment>
     <fragment
         android:id="@+id/nav_createGroup"

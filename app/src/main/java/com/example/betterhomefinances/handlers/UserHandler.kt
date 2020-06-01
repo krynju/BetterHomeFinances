@@ -41,8 +41,6 @@ object UserHandler {
         }, {})
     }
 
-//    val users get()= FirestoreHandler.db.collection("")
-
     val currentUserReference: UserReference get() = currentUserDocumentReference.path
     var userDetails: ObservableMap<UserReference, UserDetails> = ObservableArrayMap()
 

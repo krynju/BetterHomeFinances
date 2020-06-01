@@ -1,5 +1,6 @@
 package com.example.betterhomefinances.handlers
 
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -11,6 +12,8 @@ object FirestoreHandler {
 
     fun ref(ref: String) = db.document(ref)
 
+
+    var registrations: MutableList<ListenerRegistration> = mutableListOf()
 
 
 }

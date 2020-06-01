@@ -62,7 +62,8 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
     override fun onTransactionListFragmentInteraction(v: View, item: TransactionItem) {
         val action =
             TransactionListFragmentDirections.actionTransactionsFragmentToTransactionDetails(
-                item.reference.toString()
+                item.reference.toString(),
+                groupReferencePath
             )
         v.findNavController().navigate(action)
     }
@@ -81,6 +82,10 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
         TransactionHandler.deleteTransaction(
             transactionHandler.data[position]?.reference!!,
             groupReferencePath
-        ) { binding.list.adapter!!.notifyItemRemoved(position) }
+        ) {
+            val a = binding.list.adapter!!
+            a.notifyItemRemoved(position)
+            a.notifyItemRemoved(a.itemCount)
+        }
     }
 }

@@ -4,7 +4,10 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableList
 import com.example.betterhomefinances.handlers.FirestoreHandler.db
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.toObject
 
 typealias GroupReference = String
@@ -23,13 +26,12 @@ data class GroupItem(
 
 object GroupHandler {
 
-    lateinit var registration: ListenerRegistration
-    lateinit var registration2: ListenerRegistration
+
 
     var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
 
     init {
-        registration2 =
+        val registration =
             UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
             val ud = snapshot?.toObject<UserDetails>()!!
             val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
@@ -53,6 +55,7 @@ object GroupHandler {
                 data.removeAll(toRemove)
             }
         }
+        FirestoreHandler.registrations.add(registration)
     }
 
     fun transactions(groupRefPath: GroupReference): TransactionStorage {
@@ -127,7 +130,7 @@ object GroupHandler {
         callback_remove: (List<GroupItem>) -> Unit
     ) {
         UserHandler.getUserDetails(UserHandler.currentUserDocumentReference, {
-            registration = FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
+            val registration = FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
                 .addSnapshotListener { result, e ->
 
                     var added: MutableList<GroupItem> = mutableListOf()
@@ -164,6 +167,8 @@ object GroupHandler {
                     callback_remove(removed)
 
                 }
+            FirestoreHandler.registrations.add(registration)
+
         }, {})
 
 

@@ -14,7 +14,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.betterhomefinances.databinding.ActivityMainBinding
-import com.example.betterhomefinances.handlers.GroupHandler
+import com.example.betterhomefinances.handlers.FirestoreHandler
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.view.*
@@ -64,8 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_signout -> {
-                GroupHandler.registration2.remove()
-                GroupHandler.registration.remove()
+                FirestoreHandler.registrations.map { it.remove(); true }
                 AuthUI.getInstance()
                     .signOut(this)
                     .addOnCompleteListener { // user is now signed out

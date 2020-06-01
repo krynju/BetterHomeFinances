@@ -64,9 +64,7 @@ class MyTransactionsRecyclerViewAdapter(
         val mIdView: TextView = mView.text_group_name
         val mContentView: TextView = mView.text_description
         val mVal: TextView = mView.text_balance
-        override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
-        }
+
     }
 }
 

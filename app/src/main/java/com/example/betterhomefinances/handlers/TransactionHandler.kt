@@ -23,7 +23,8 @@ data class Transaction(
     var borrowers: HashMap<UserReference, Double> = hashMapOf(),
     var title: String = "",
     var description: String = "",
-    var category: String = ""
+    var category: String = "",
+    var imageReference: String = ""
 )
 
 data class TransactionItem(
@@ -82,7 +83,7 @@ object TransactionHandler {
         value: Double,
         category: String,
         description: String,
-        borrowers: HashMap<UserReference, Double>, successCallback: () -> Unit
+        borrowers: HashMap<UserReference, Double>, successCallback: (DocumentReference) -> Unit
     ) {
         db.runTransaction { dbTransaction ->
             val groupRef = ref(groupReference)
@@ -95,9 +96,9 @@ object TransactionHandler {
             group.balance.timestamp = Timestamp.now()
 
             dbTransaction.set(groupRef, group)
-
+            val tranRef = transactionsReference(groupRef).document()
             dbTransaction.set(
-                transactionsReference(groupRef).document(),
+                tranRef,
                 Transaction(
                     value,
                     lender,
@@ -106,11 +107,13 @@ object TransactionHandler {
                     borrowers,
                     title,
                     description,
-                    category
+                    category,
+                    ""
                 )
             )
-            null
-        }.addOnSuccessListener { Log.d(TAG, "transaction done"); successCallback() }
+            tranRef
+
+        }.addOnSuccessListener { result -> Log.d(TAG, "transaction done"); successCallback(result) }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
     }
 
@@ -124,7 +127,7 @@ object TransactionHandler {
         category: String,
         description: String,
         borrowers: HashMap<UserReference, Double>,
-        callback: () -> Unit
+        callback: (DocumentReference) -> Unit
     ) {
         db.runTransaction { dbTransaction ->
             val transactionReference = ref(transactionReferencePath)
@@ -152,8 +155,9 @@ object TransactionHandler {
 
             dbTransaction.set(groupRef, group)
             dbTransaction.set(transactionReference, transaction)
-            null
-        }.addOnSuccessListener { Log.d(TAG, "transaction done"); callback() }
+
+            transactionReference
+        }.addOnSuccessListener { Log.d(TAG, "transaction done"); callback(it) }
             .addOnFailureListener { fail -> Log.d(TAG, "$fail") }
 
     }

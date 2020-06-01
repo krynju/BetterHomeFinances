@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:divider="?attr/dividerHorizontal"
+    android:minHeight="?attr/minTouchTargetSize"
+    android:orientation="horizontal">
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/u_val_nn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:inputType="numberSigned|numberDecimal"
+        android:text="0.0"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/text_group_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_weight="5"
+        android:fontFamily="sans-serif"
+        android:text="title text"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+
+</LinearLayout>
+
