@@ -85,7 +85,7 @@ class TransactionListFragment : Fragment(), OnTransactionListFragmentInteraction
         ) {
             val a = binding.list.adapter!!
             a.notifyItemRemoved(position)
-            a.notifyItemRemoved(a.itemCount)
+//            a.notifyItemRemoved(a.itemCount)
         }
     }
 }

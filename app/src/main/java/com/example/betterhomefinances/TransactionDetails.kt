@@ -13,6 +13,7 @@ import com.example.betterhomefinances.adapters.BorrowersListRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentTransactionDetailsBinding
 import com.example.betterhomefinances.handlers.*
 import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.toObject
 import java.io.File
@@ -21,6 +22,7 @@ import kotlin.math.round
 
 class TransactionDetails : Fragment() {
 
+    private lateinit var snapshotlistener: ListenerRegistration
     private var _binding: FragmentTransactionDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -44,10 +46,21 @@ class TransactionDetails : Fragment() {
 
 
         val userIds = groupItem.group.members.map { it.split("/")[1] }
+
+
+        val userRefs = groupItem.group.members.map { it }
+
+        val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
+
+        userNames = foundRefs.map { it to UserHandler.localUsersInfo[it] }
+            .toMap() as MutableMap<UserReference, UserDetails>
+
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get().addOnSuccessListener { querySnapshot: QuerySnapshot? ->
                 userNames = querySnapshot!!.map { it.reference.path to it.toObject<UserDetails>() }
                     .toMap() as MutableMap<UserReference, UserDetails>
+                UserHandler.localUsersInfo.putAll(userNames)
+
                 if (this::transaction.isInitialized) {
                     updateNameInfo()
                     updateTransactionInfo()
@@ -61,7 +74,7 @@ class TransactionDetails : Fragment() {
     ): View? {
         _binding = FragmentTransactionDetailsBinding.inflate(inflater, container, false)
         updateTransactionInfo()
-        FirestoreHandler.db.document(transactionReferencePath.toString())
+        snapshotlistener = FirestoreHandler.db.document(transactionReferencePath.toString())
             .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
                 assert(documentSnapshot!!.exists())
                 transaction = documentSnapshot.toObject<Transaction>()!!
@@ -74,7 +87,10 @@ class TransactionDetails : Fragment() {
         adapter =
             BorrowersListRecyclerViewAdapter()
         binding.recyclerView2.adapter = adapter
+        updateNameInfo()
+
         binding.extendedFloatingActionButton.setOnClickListener { onEditClick(it) }
+
         return binding.root
     }
 
@@ -98,7 +114,9 @@ class TransactionDetails : Fragment() {
                 val bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 binding.image.setImageBitmap(bitmap)
                 }
+            binding.image.setOnClickListener { onImageClick(it) }
             }
+
 
     }
 
@@ -122,6 +140,17 @@ class TransactionDetails : Fragment() {
             null
         )
         findNavController().navigate(action)
+    }
+
+    fun onImageClick(v: View) {
+        val action =
+            TransactionDetailsDirections.actionNavTransactionDetailsToPhotoView(transaction.imageReference)
+        findNavController().navigate(action)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        snapshotlistener.remove()
     }
 
 

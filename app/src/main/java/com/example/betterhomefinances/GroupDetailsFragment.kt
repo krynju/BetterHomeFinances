@@ -32,8 +32,6 @@ class GroupDetailsFragment : Fragment() {
         group =
             GroupHandler.data.find { groupItem -> groupItem.reference == groupReferencePath }!!.group
         adapter = BalanceItemRecyclerViewAdapter(group)
-
-
     }
 
 
@@ -48,6 +46,7 @@ class GroupDetailsFragment : Fragment() {
         } as ArrayList<Pair<UserReference, Double>>)
         adapter.notifyDataSetChanged()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

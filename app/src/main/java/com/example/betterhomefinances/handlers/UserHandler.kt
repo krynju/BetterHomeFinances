@@ -39,7 +39,11 @@ object UserHandler {
         getUserDetails(currentUserDocumentReference, {
             userDetails[currentUserDocumentReference.path] = it
         }, {})
+
+
     }
+
+    val localUsersInfo: MutableMap<UserReference, UserDetails> = mutableMapOf()
 
     val currentUserReference: UserReference get() = currentUserDocumentReference.path
     var userDetails: ObservableMap<UserReference, UserDetails> = ObservableArrayMap()
@@ -55,6 +59,7 @@ object UserHandler {
         userReference
             .get()
             .addOnSuccessListener { result ->
+                localUsersInfo[result.reference.path] = result.toObject<UserDetails>()!!
                 result.toObject<UserDetails>()?.let { callback(it) }
             }
             .addOnFailureListener { failureCallback() }

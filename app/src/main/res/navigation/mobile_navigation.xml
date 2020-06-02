@@ -79,6 +79,9 @@
             android:id="@+id/action_nav_transactionDetails_to_nav_createTransaction"
             app:destination="@id/nav_createTransaction" />
         <argument android:name="groupReferencePath" />
+        <action
+            android:id="@+id/action_nav_transactionDetails_to_photoView"
+            app:destination="@id/photoView" />
     </fragment>
     <fragment
         android:id="@+id/nav_createGroup"
@@ -112,5 +115,12 @@
         <action
             android:id="@+id/action_nav_paybacks_to_nav_createTransaction"
             app:destination="@id/nav_createTransaction" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoView"
+        android:name="com.example.betterhomefinances.PhotoView"
+        android:label="PhotoView"
+        tools:layout="@layout/fragment_photo_view">
+        <argument android:name="imagePath" />
     </fragment>
 </navigation>

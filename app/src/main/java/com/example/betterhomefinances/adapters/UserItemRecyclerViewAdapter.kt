@@ -35,12 +35,21 @@ class UserItemRecyclerViewAdapter(
 
     init {
         val userIds = groupItem.group.members.map { it.split("/")[1] }
+
+        val userRefs = groupItem.group.members.map { it }
+
+        val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
+        data = foundRefs.map { UserItem(it, UserHandler.localUsersInfo[it]) }
+        indivitualValues = data.map { 0.0 } as ArrayList<Double>
+        switchList = data.map { false } as ArrayList<Boolean>
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get()
             .addOnSuccessListener {
                 data = it.map {
                     UserItem(it.reference.path, it.toObject<UserDetails>())
                 }
+
+                UserHandler.localUsersInfo.putAll(data.map { it.reference!! to it.user!! }.toMap())
 
                 indivitualValues = it.map { 0.0 } as ArrayList<Double>
                 switchList = it.map { false } as ArrayList<Boolean>
