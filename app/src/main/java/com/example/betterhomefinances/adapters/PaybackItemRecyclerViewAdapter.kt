@@ -22,6 +22,12 @@ class PaybackItemRecyclerViewAdapter(groupReference: GroupReference) :
         val group =
             GroupHandler.data.find { groupItem -> groupItem.reference == groupReference }!!.group
         val userIds = group.members.map { it.split("/")[1] }
+        val userRefs = group.members.map { it }
+
+        val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
+        userNames = foundRefs.map { it to UserHandler.localUsersInfo[it]!!.name!! }.toMap()
+
+
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get()
             .addOnSuccessListener {
