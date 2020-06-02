@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.example.betterhomefinances.databinding.FragmentPhotoViewBinding
 import com.example.betterhomefinances.handlers.StorageHandler
 import java.io.File
 
-class PhotoView : Fragment() {
+class PhotoViewFragment : Fragment() {
 
     private var _binding: FragmentPhotoViewBinding? = null
     private val binding get() = _binding!!

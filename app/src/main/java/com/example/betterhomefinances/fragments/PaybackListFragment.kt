@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -30,7 +30,6 @@ class PaybackListFragment : Fragment(), SwipeLeftRightCallback.Listener {
         groupReferencePath = arguments?.get("groupReferencePath") as String
 
         adapter = PaybackItemRecyclerViewAdapter(groupReferencePath as GroupReference)
-
     }
 
     override fun onCreateView(
@@ -55,12 +54,13 @@ class PaybackListFragment : Fragment(), SwipeLeftRightCallback.Listener {
 
     override fun onSwipedRight(position: Int) {
 
-        val action = PaybackListFragmentDirections.actionNavPaybacksToNavCreateTransaction(
-            groupReferencePath,
-            null,
-            adapter.data[position].value.toFloat(),
-            adapter.data[position].loaner
-        )
+        val action =
+            PaybackListFragmentDirections.actionNavPaybacksToNavCreateTransaction(
+                groupReferencePath,
+                null,
+                adapter.data[position].value.toFloat(),
+                adapter.data[position].loaner
+            )
         findNavController().navigate(action)
     }
 

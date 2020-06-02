@@ -18,14 +18,16 @@ class BalanceItemRecyclerViewAdapter(group: Group) :
     var userNames: MutableMap<UserReference, String> = mutableMapOf()
 
     init {
-//        userNames = data.map{""} as ArrayList<String>
+        val userRefs = group.balance.balances.map { it.key } as MutableList
+        userRefs.addAll(group.members.map { it })
+        val userIds = userRefs.map { it.split("/")[1] }
 
-        val userIds = group.members.map { it.split("/")[1] }
-        val userRefs = group.members.map { it }
 
         val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
-        userNames = foundRefs.map { it to UserHandler.localUsersInfo[it]!!.name!! }
-            .toMap() as MutableMap<UserReference, String>
+        if (foundRefs.isNotEmpty()) {
+            userNames = foundRefs.map { it to UserHandler.localUsersInfo[it]!!.name!! }
+                .toMap() as MutableMap<UserReference, String>
+        }
 
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get()

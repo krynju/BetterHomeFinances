@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -20,7 +20,7 @@ import java.io.File
 import kotlin.math.round
 
 
-class TransactionDetails : Fragment() {
+class TransactionDetailsFragment : Fragment() {
 
     private lateinit var snapshotlistener: ListenerRegistration
     private var _binding: FragmentTransactionDetailsBinding? = null
@@ -44,17 +44,19 @@ class TransactionDetails : Fragment() {
             TransactionHandler.getInstance(groupReferencePath!!).data.find { transactionItem -> transactionItem.reference == transactionReferencePath }?.transaction!!
         val groupItem: GroupItem = GroupHandler.data.find { it.reference == groupReferencePath }!!
 
+        val userRefs = groupItem.group.members.map { it } as MutableList
 
-        val userIds = groupItem.group.members.map { it.split("/")[1] }
+        userRefs.addAll(transaction.borrowers.map { it.key })
+
+        val userIds = userRefs.map { it.split("/")[1] }
 
 
-        val userRefs = groupItem.group.members.map { it }
 
         val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
-
-        userNames = foundRefs.map { it to UserHandler.localUsersInfo[it] }
-            .toMap() as MutableMap<UserReference, UserDetails>
-
+        if (foundRefs.isNotEmpty()) {
+            userNames = foundRefs.map { it to UserHandler.localUsersInfo[it] }
+                .toMap() as MutableMap<UserReference, UserDetails>
+        }
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get().addOnSuccessListener { querySnapshot: QuerySnapshot? ->
                 userNames = querySnapshot!!.map { it.reference.path to it.toObject<UserDetails>() }
@@ -133,18 +135,21 @@ class TransactionDetails : Fragment() {
     }
 
     fun onEditClick(v: View) {
-        val action = TransactionDetailsDirections.actionNavTransactionDetailsToNavCreateTransaction(
-            groupReferencePath.toString(),
-            transactionReferencePath,
-            0.0F,
-            null
-        )
+        val action =
+            TransactionDetailsFragmentDirections.actionNavTransactionDetailsToNavCreateTransaction(
+                groupReferencePath.toString(),
+                transactionReferencePath,
+                0.0F,
+                null
+            )
         findNavController().navigate(action)
     }
 
     fun onImageClick(v: View) {
         val action =
-            TransactionDetailsDirections.actionNavTransactionDetailsToPhotoView(transaction.imageReference)
+            TransactionDetailsFragmentDirections.actionNavTransactionDetailsToPhotoView(
+                transaction.imageReference
+            )
         findNavController().navigate(action)
     }
 

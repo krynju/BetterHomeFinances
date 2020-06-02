@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +22,8 @@ interface OnTransactionListFragmentInteractionListener {
     fun onTransactionListFragmentInteraction(v: View, item: TransactionItem)
 }
 
-class TransactionListFragment : Fragment(), OnTransactionListFragmentInteractionListener,
+class TransactionListFragment : Fragment(),
+    OnTransactionListFragmentInteractionListener,
     SwipeLeftRightCallback.Listener {
     private var _binding: FragmentTransactionListBinding? = null
     private val binding get() = _binding!!

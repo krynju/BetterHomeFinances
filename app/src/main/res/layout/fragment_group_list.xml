@@ -19,10 +19,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftBgColor="@color/colorAccent"
         app:leftText="New"
+        app:rightBgColor="@color/secondaryRed"
+        app:rightText="Leave"
 
         app:textColor="@android:color/white"
         app:textSize="20sp"
-        tools:context=".GroupListFragment"
+        tools:context=".fragments.GroupListFragment"
         tools:listitem="@layout/fragment_group_item">
 
 

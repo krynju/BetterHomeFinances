@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -30,7 +30,8 @@ import com.tsuryo.swipeablerv.SwipeLeftRightCallback
 import kotlin.math.abs
 
 
-class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
+class HomeFragment : Fragment(),
+    OnGroupListFragmentInteractionListener,
     SwipeLeftRightCallback.Listener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +61,10 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
         binding.recyclerView.setListener(this)
         navController = findNavController()
 
-        mOnListChangedCallback = MyOnGroupListChangedCallback(this)
+        mOnListChangedCallback =
+            MyOnGroupListChangedCallback(
+                this
+            )
 
         GroupHandler.data.addOnListChangedCallback(mOnListChangedCallback)
 
@@ -197,15 +201,19 @@ class HomeFragment : Fragment(), OnGroupListFragmentInteractionListener,
     }
 
     override fun onGroupListFragmentInteraction(v: View, item: String?) {
-        val action = HomeFragmentDirections.actionNavHomeToNavGroupDetails(item!!)
+        val action =
+            HomeFragmentDirections.actionNavHomeToNavGroupDetails(
+                item!!
+            )
         v.findNavController().navigate(action)
     }
 
     override fun onSwipedRight(position: Int) {
-        val action = HomeFragmentDirections.actionNavHomeToCreateTransaction(
-            GroupHandler.data[position].reference,
-            null, 0.0F, null
-        )
+        val action =
+            HomeFragmentDirections.actionNavHomeToCreateTransaction(
+                GroupHandler.data[position].reference,
+                null, 0.0F, null
+            )
         navController?.navigate(action)
     }
 

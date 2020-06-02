@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.databinding.ObservableList
 import androidx.databinding.ObservableList.OnListChangedCallback
 import androidx.recyclerview.widget.RecyclerView
-import com.example.betterhomefinances.OnGroupListFragmentInteractionListener
 import com.example.betterhomefinances.R
+import com.example.betterhomefinances.fragments.OnGroupListFragmentInteractionListener
 import com.example.betterhomefinances.handlers.GroupHandler
 import com.example.betterhomefinances.handlers.GroupItem
 import com.example.betterhomefinances.handlers.UserHandler

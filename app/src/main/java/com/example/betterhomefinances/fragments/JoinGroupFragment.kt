@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.app.Activity
 import android.content.Context
@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.betterhomefinances.databinding.FragmentSlideshowBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 
-class SlideshowFragment : Fragment() {
+class JoinGroupFragment : Fragment() {
     private var _binding: FragmentSlideshowBinding? = null
     private val binding get() = _binding!!
 

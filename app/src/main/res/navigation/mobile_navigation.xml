@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.betterhomefinances.HomeFragment"
+        android:name="com.example.betterhomefinances.fragments.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/nav_groups"
-        android:name="com.example.betterhomefinances.GroupListFragment"
+        android:name="com.example.betterhomefinances.fragments.GroupListFragment"
         android:label="@string/menu_groups"
         tools:layout="@layout/fragment_group_list">
         <action
@@ -37,12 +37,12 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.betterhomefinances.SlideshowFragment"
+        android:name="com.example.betterhomefinances.fragments.JoinGroupFragment"
         android:label="Join a group!"
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_groupDetails"
-        android:name="com.example.betterhomefinances.GroupDetailsFragment"
+        android:name="com.example.betterhomefinances.fragments.GroupDetailsFragment"
         android:label="Group Details"
         tools:layout="@layout/fragment_group_details">
         <argument android:name="groupReferencePath" />
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_transactionListFragment"
-        android:name="com.example.betterhomefinances.TransactionListFragment"
+        android:name="com.example.betterhomefinances.fragments.TransactionListFragment"
         android:label="Transactions"
         tools:layout="@layout/fragment_transaction_list">
         <action
@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_transactionDetails"
-        android:name="com.example.betterhomefinances.TransactionDetails"
+        android:name="com.example.betterhomefinances.fragments.TransactionDetailsFragment"
         android:label="Transaction Details"
         tools:layout="@layout/fragment_transaction_details">
         <argument android:name="transactionReferencePath" />
@@ -85,12 +85,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_createGroup"
-        android:name="com.example.betterhomefinances.CreateGroup"
+        android:name="com.example.betterhomefinances.fragments.CreateGroupFragment"
         android:label="Group Creator"
         tools:layout="@layout/fragment_create_group" />
     <fragment
         android:id="@+id/nav_createTransaction"
-        android:name="com.example.betterhomefinances.CreateTransaction"
+        android:name="com.example.betterhomefinances.fragments.CreateTransactionFragment"
         android:label="Transaction Creator"
         tools:layout="@layout/fragment_create_transaction">
         <argument android:name="groupReferencePath" />
@@ -107,7 +107,7 @@
 
     <fragment
         android:id="@+id/nav_paybacks"
-        android:name="com.example.betterhomefinances.PaybackListFragment"
+        android:name="com.example.betterhomefinances.fragments.PaybackListFragment"
         android:label="Paybacks"
         tools:layout="@layout/fragment_payback_list">
 
@@ -118,7 +118,7 @@
     </fragment>
     <fragment
         android:id="@+id/photoView"
-        android:name="com.example.betterhomefinances.PhotoView"
+        android:name="com.example.betterhomefinances.fragments.PhotoViewFragment"
         android:label="PhotoView"
         tools:layout="@layout/fragment_photo_view">
         <argument android:name="imagePath" />

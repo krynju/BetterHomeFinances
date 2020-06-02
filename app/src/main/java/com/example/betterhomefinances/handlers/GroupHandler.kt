@@ -27,34 +27,33 @@ data class GroupItem(
 object GroupHandler {
 
 
-
     var data: ObservableList<GroupItem> = ObservableArrayList<GroupItem>()
 
     init {
         val registration =
             UserHandler.currentUserDocumentReference.addSnapshotListener { snapshot, e ->
-            val ud = snapshot?.toObject<UserDetails>()!!
-            val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
-            val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
-            if (currentIds.union(fetchedIds).size > currentIds.size) {
-                getGroupsRefPair(fetchedIds.subtract(currentIds).toList(),
-                    { data.addAll(0, it) },
-                    {
-                        data.replaceAll { t: GroupItem? ->
-                            if (t!!.reference in it.map { it.reference }) {
-                                it.find { groupItem -> groupItem.reference == t!!.reference }
-                            } else {
-                                t
+                val ud = snapshot?.toObject<UserDetails>()!!
+                val currentIds = data.map { groupItem -> groupItem.reference.split("/")[1] }.toSet()
+                val fetchedIds = ud.memberOfGroups.map { id -> id.split("/")[1] }.toSet()
+                if (currentIds.union(fetchedIds).size > currentIds.size) {
+                    getGroupsRefPair(fetchedIds.subtract(currentIds).toList(),
+                        { data.addAll(0, it) },
+                        {
+                            data.replaceAll { t: GroupItem? ->
+                                if (t!!.reference in it.map { it.reference }) {
+                                    it.find { groupItem -> groupItem.reference == t!!.reference }
+                                } else {
+                                    t
+                                }
                             }
-                        }
-                    },
-                    {})
-            } else if (fetchedIds.size < currentIds.size) {
-                val el = currentIds.subtract(fetchedIds)
-                val toRemove = data.filter { it.reference.split("/")[1] in el }
-                data.removeAll(toRemove)
+                        },
+                        {})
+                } else if (fetchedIds.size < currentIds.size) {
+                    val el = currentIds.subtract(fetchedIds)
+                    val toRemove = data.filter { it.reference.split("/")[1] in el }
+                    data.removeAll(toRemove)
+                }
             }
-        }
         FirestoreHandler.registrations.add(registration)
     }
 
@@ -133,11 +132,11 @@ object GroupHandler {
             val registration = FirestoreHandler.groups.whereIn(FieldPath.documentId(), groupIds)
                 .addSnapshotListener { result, e ->
 
-                    var added: MutableList<GroupItem> = mutableListOf()
-                    var updated: MutableList<GroupItem> = mutableListOf()
-                    var removed: MutableList<GroupItem> = mutableListOf()
+                    val added: MutableList<GroupItem> = mutableListOf()
+                    val updated: MutableList<GroupItem> = mutableListOf()
+                    val removed: MutableList<GroupItem> = mutableListOf()
                     if (result != null) {
-                        for (dc in result!!.documentChanges) {
+                        for (dc in result.documentChanges) {
                             when (dc.type) {
                                 DocumentChange.Type.ADDED -> added.add(
                                     GroupItem(
@@ -157,21 +156,35 @@ object GroupHandler {
                                         dc.document.toObject<Group>()
                                     )
                                 )
-
                             }
                         }
                     }
-
                     callback_add(added)
                     callback_update(updated)
                     callback_remove(removed)
-
                 }
             FirestoreHandler.registrations.add(registration)
-
         }, {})
 
 
+    }
+
+    fun leaveGroup(reference: GroupReference) {
+        db.runTransaction { dbTransaction ->
+            val group = dbTransaction.get(db.document(reference))
+            if (group.exists()) {
+                dbTransaction.update(
+                    group.reference,
+                    "members",
+                    FieldValue.arrayRemove(UserHandler.currentUserReference)
+                )
+                dbTransaction.update(
+                    UserHandler.currentUserDocumentReference,
+                    "memberOfGroups",
+                    FieldValue.arrayRemove(reference)
+                )
+            }
+        }
     }
 
 

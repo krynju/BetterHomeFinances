@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TransactionDetails">
+    tools:context=".fragments.TransactionDetailsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11"
-        tools:context=".TransactionDetails"
+        tools:context=".fragments.TransactionDetailsFragment"
 
         tools:listitem="@layout/fragment_borrower_item" />
 

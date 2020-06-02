@@ -9,7 +9,7 @@
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".TransactionListFragment"
+    tools:context=".fragments.TransactionListFragment"
     app:leftBgColor="@color/colorAccent"
 
     app:leftText="Edit"

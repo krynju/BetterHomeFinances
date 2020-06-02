@@ -1,9 +1,13 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -38,6 +42,13 @@ class GroupDetailsFragment : Fragment() {
     fun updateGroupInfo() {
         binding.groupName.text = group.name
         binding.textView2.text = group.description
+        binding.groupName.setOnClickListener {
+            var clipboard =
+                getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
+            val clip = ClipData.newPlainText("label", groupReferencePath!!.split("/")[1])
+            clipboard.setPrimaryClip(clip)
+            Toast.makeText(context, "Invite code copied to clipboard!", Toast.LENGTH_LONG).show()
+        }
         adapter.data = (group.balance.balances.map {
             Pair(
                 it.key,
@@ -70,22 +81,26 @@ class GroupDetailsFragment : Fragment() {
     }
 
     private fun goToTransactions(v: View) {
-        val action = GroupDetailsFragmentDirections.actionNavGroupDetailsToTransactionsFragment(
-            groupReferencePath!!
-        )
+        val action =
+            GroupDetailsFragmentDirections.actionNavGroupDetailsToTransactionsFragment(
+                groupReferencePath!!
+            )
         v.findNavController().navigate(action)
     }
 
     private fun createTransactionButton(v: View) {
-        val action = GroupDetailsFragmentDirections.actionNavGroupDetailsToCreateTransaction(
-            groupReferencePath!!, null, 0.0F, null
-        )
+        val action =
+            GroupDetailsFragmentDirections.actionNavGroupDetailsToCreateTransaction(
+                groupReferencePath!!, null, 0.0F, null
+            )
         v.findNavController().navigate(action)
     }
 
     fun onClickPaybacks(v: View) {
         val action =
-            GroupDetailsFragmentDirections.actionNavGroupDetailsToNavPaybacks(groupReferencePath!!)
+            GroupDetailsFragmentDirections.actionNavGroupDetailsToNavPaybacks(
+                groupReferencePath!!
+            )
         findNavController().navigate(action)
     }
 

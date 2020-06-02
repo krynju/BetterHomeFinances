@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 
 import android.app.Activity
@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.betterhomefinances.MainActivity
 import com.example.betterhomefinances.adapters.UserItemRecyclerViewAdapter
 import com.example.betterhomefinances.databinding.FragmentCreateTransactionBinding
 import com.example.betterhomefinances.handlers.*
@@ -41,7 +42,8 @@ interface OnUserListFragmentInteractionListener {
     fun onUserListFragmentInteraction(v: View, item: UserItem)
 }
 
-class CreateTransaction : Fragment(), OnUserListFragmentInteractionListener {
+class CreateTransactionFragment : Fragment(),
+    OnUserListFragmentInteractionListener {
     private var _binding: FragmentCreateTransactionBinding? = null
     private val binding get() = _binding!!
     var groupReferencePath: GroupReference? = null

@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -22,7 +22,8 @@ interface OnGroupListFragmentInteractionListener {
     fun onGroupListFragmentInteraction(v: View, item: String?)
 }
 
-class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
+class GroupListFragment : Fragment(),
+    OnGroupListFragmentInteractionListener,
     SwipeLeftRightCallback.Listener {
     private val TAG = "ItemFragment.kt"
 
@@ -66,24 +67,29 @@ class GroupListFragment : Fragment(), OnGroupListFragmentInteractionListener,
 
 
     override fun onGroupListFragmentInteraction(v: View, item: String?) {
-        val action = GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(item!!)
+        val action =
+            GroupListFragmentDirections.actionNavGroupsToNavGroupDetails(
+                item!!
+            )
         v.findNavController().navigate(action)
     }
 
     override fun onSwipedRight(position: Int) {
-        val action = GroupListFragmentDirections.actionNavGroupsToNavCreateTransaction(
-            GroupHandler.data[position].reference,
-            null, 0.0F, null
-        )
+        val action =
+            GroupListFragmentDirections.actionNavGroupsToNavCreateTransaction(
+                GroupHandler.data[position].reference,
+                null, 0.0F, null
+            )
         navController?.navigate(action)
     }
 
     override fun onSwipedLeft(position: Int) {
-        TODO("Not yet implemented")
+        GroupHandler.leaveGroup(GroupHandler.data[position].reference)
     }
 
     private fun onCreateGroupClick(v: View) {
-        val action = GroupListFragmentDirections.actionNavGroupsToCreateGroup()
+        val action =
+            GroupListFragmentDirections.actionNavGroupsToCreateGroup()
         findNavController().navigate(action)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.betterhomefinances
+package com.example.betterhomefinances.fragments
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,7 @@ import com.example.betterhomefinances.databinding.FragmentCreateGroupBinding
 import com.example.betterhomefinances.handlers.GroupHandler
 
 
-class CreateGroup : Fragment() {
+class CreateGroupFragment : Fragment() {
     private var _binding: FragmentCreateGroupBinding? = null
     private val binding get() = _binding!!
 

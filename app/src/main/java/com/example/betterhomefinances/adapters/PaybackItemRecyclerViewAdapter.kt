@@ -21,12 +21,15 @@ class PaybackItemRecyclerViewAdapter(groupReference: GroupReference) :
 
         val group =
             GroupHandler.data.find { groupItem -> groupItem.reference == groupReference }!!.group
-        val userIds = group.members.map { it.split("/")[1] }
-        val userRefs = group.members.map { it }
+        val userRefs = group.balance.paybacks.map { it.borrower } as MutableList
+        userRefs.addAll(group.balance.paybacks.map { it.loaner })
+        userRefs.addAll(group.members.map { it })
+        val userIds = userRefs.map { it.split("/")[1] }
 
         val foundRefs = UserHandler.localUsersInfo.keys.filter { userRefs.contains(it) }
-        userNames = foundRefs.map { it to UserHandler.localUsersInfo[it]!!.name!! }.toMap()
-
+        if (foundRefs.isNotEmpty()) {
+            userNames = foundRefs.map { it to UserHandler.localUsersInfo[it]!!.name!! }.toMap()
+        }
 
         FirestoreHandler.users.whereIn(FieldPath.documentId(), userIds)
             .get()
