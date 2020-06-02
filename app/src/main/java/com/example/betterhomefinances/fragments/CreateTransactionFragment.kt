@@ -192,7 +192,9 @@ class CreateTransactionFragment : Fragment(),
     }
 
     fun handlePicture(transactionReference: DocumentReference) {
-        if (mode == "edit" && transaction!!.imageReference.split("/")
+        if (this::currentPhotoPath.isInitialized && mode == "edit" && transaction!!.imageReference.split(
+                "/"
+            )
                 .last() == currentPhotoPath.split("/").last()
         ) {
             return
