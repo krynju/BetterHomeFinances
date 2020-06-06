@@ -85,7 +85,7 @@ class TransactionListFragment : Fragment(),
             groupReferencePath
         ) {
             val a = binding.list.adapter!!
-            transactionHandler.data.removeAt(position)
+//            transactionHandler.data.removeAt(position)
 //            a.notifyItemRemoved(position)
 //            a.notifyItemRemoved(a.itemCount)
         }

@@ -76,8 +76,8 @@ class TransactionDetailsFragment : Fragment() {
     ): View? {
         _binding = FragmentTransactionDetailsBinding.inflate(inflater, container, false)
         updateTransactionInfo()
-        snapshotlistener = FirestoreHandler.db.document(transactionReferencePath.toString())
-            .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        FirestoreHandler.db.document(transactionReferencePath.toString()).get()
+            .addOnSuccessListener { documentSnapshot ->
                 assert(documentSnapshot!!.exists())
                 transaction = documentSnapshot.toObject<Transaction>()!!
                 if (this::userNames.isInitialized) {
@@ -153,9 +153,10 @@ class TransactionDetailsFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        snapshotlistener.remove()
+    override fun onDetach() {
+        super.onDetach()
+//        snapshotlistener.remove()
+
     }
 
 
